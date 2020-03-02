@@ -99,7 +99,7 @@ class WorldState(state.State):
         # The delayed facing variable used to change the player's facing in
         # the middle of a transition.
         self.delayed_facing = None
-        self.view = MapView(None, self.world)
+        self.view = MapView(self.world)
 
     def resume(self):
         """ Called after returning focus to this state

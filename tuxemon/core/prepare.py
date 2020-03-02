@@ -42,12 +42,12 @@ import re
 
 from tuxemon.constants import paths
 from tuxemon.core import config
+from tuxemon.core.session import Session
 
 logger = logging.getLogger(__name__)
 
 # TODO: refact this out when other platforms supported (such as headless)
 PLATFORM = "pygame"
-
 
 # list of regular expressions to blacklist devices
 joystick_blacklist = [
@@ -168,7 +168,6 @@ def pygame_init():
 
 # Initialize the game framework
 def init():
-
     # initialize any platform-specific workarounds before pygame
     from tuxemon.core import platform
     platform.init()
@@ -188,3 +187,4 @@ def fetch(*args):
             return path
 
     raise FileNotFoundError(relative_path)
+

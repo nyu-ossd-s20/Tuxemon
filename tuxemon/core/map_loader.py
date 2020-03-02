@@ -49,6 +49,26 @@ from tuxemon.core.tools import split_escaped, snap_point, snap_rect, tiles_insid
 logger = logging.getLogger(__name__)
 
 
+def parse_action_string(text):
+    words = text.split(' ', 1)
+    act_type = words[0]
+    if len(words) > 1:
+        args = split_escaped(words[1])
+    else:
+        args = list()
+    return act_type, args
+
+
+def parse_condition_string(text):
+    words = text.split(' ', 2)
+    operator, cond_type = words[0:2]
+    if len(words) > 2:
+        args = split_escaped(words[2])
+    else:
+        args = list()
+    return operator, cond_type, args
+
+
 def parse_behav_string(behav_string):
     words = behav_string.split(' ', 1)
     behav_type = words[0]
@@ -102,17 +122,15 @@ class TMXMapLoader(object):
         collision_map = dict()
         collision_lines_map = dict()
 
-        return TuxemonMap(events, inits, interacts, collision_map, collision_lines_map)
-
         for obj in data.objects:
-            if obj.type == 'collision':
-                self.process_region(obj, tile_size)
-                # collision_map[collision_tile] = region_conditions
+            # if obj.type == 'collision':
+            #     self.process_region(obj, tile_size)
+            #     # collision_map[collision_tile] = region_conditions
+            #
+            # elif obj.type == 'collision-line':
+            #     self.process_line(obj, tile_size)
 
-            elif obj.type == 'collision-line':
-                self.process_line(obj, tile_size)
-
-            elif obj.type == 'event':
+            if obj.type == 'event':
                 events.append(self.load_event(obj, tile_size))
 
             elif obj.type == 'init':
@@ -180,7 +198,7 @@ class TMXMapLoader(object):
             yield collision_tile, region_conditions
 
     def load_event(self, obj, tile_size):
-        """
+        """ Load an Event from the map
 
         :param obj:
         :param tile_size:
@@ -197,13 +215,15 @@ class TMXMapLoader(object):
         # We need to sort them by name, so that "act1" comes before "act2" and so on..
         keys = natsort.natsorted(obj.properties.keys())
 
-        for key, value in natsort.natsorted(obj.items()):
+        for key, value in natsort.natsorted(obj.properties.items()):
             if key.startswith('cond'):
-                condition = EventCondition.from_string(value)
+                cond_type, args, operator = parse_condition_string(value)
+                condition = MapCondition(cond_type, args, x, y, w, h, operator)
                 conds.append(condition)
 
             elif key.startswith('act'):
-                action = EventAction.from_string(value)
+                act_type, args = parse_action_string(value)
+                action = MapAction(act_type, args)
                 acts.append(action)
 
         for key in keys:

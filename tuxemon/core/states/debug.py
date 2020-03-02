@@ -38,3 +38,32 @@ WIP make a state that is responsible for printing/displaying debug info
 #             y += 200
 #
 #         yy = y
+def debug_drawing(self, surface):
+    surface.lock()
+
+    # draw events
+    for event in self.game.events:
+        topleft = self.get_pos_from_tilepos((event.x, event.y))
+        size = self.project((event.w, event.h))
+        rect = topleft, size
+        box(surface, rect, (0, 255, 0, 128))
+
+    # We need to iterate over all collidable objects.  So, let's start
+    # with the walls/collision boxes.
+    box_iter = itertools.imap(self._collision_box_to_pgrect, self.collision_map)
+
+    # Next, deal with solid NPCs.
+    npc_iter = itertools.imap(self._npc_to_pgrect, self.npcs.values())
+
+    # draw noc and wall collision tiles
+    red = (255, 0, 0, 128)
+    for item in itertools.chain(box_iter, npc_iter):
+        box(surface, item, red)
+
+    # draw center lines to verify camera is correct
+    w, h = surface.get_size()
+    cx, cy = w // 2, h // 2
+    pygame.draw.line(surface, (255, 50, 50), (cx, 0), (cx, h))
+    pygame.draw.line(surface, (255, 50, 50), (0, cy), (w, cy))
+
+    surface.unlock()

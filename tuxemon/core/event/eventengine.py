@@ -30,11 +30,10 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import logging
-import os.path
 
 from tuxemon.constants import paths
-from tuxemon.core import prepare
 from tuxemon.core import plugin
+from tuxemon.core import prepare
 from tuxemon.core.platform.const import buttons
 
 logger = logging.getLogger(__name__)
@@ -84,45 +83,25 @@ class RunningEvent(object):
 
 
 class EventEngine(object):
-    """ A class for the event engine. The event engine checks to see if a group of
-    conditions have been met and then executes a set of actions.
+    """ A class for the event engine.
 
-    Actions in the same MapEvent are not run concurrently, and they can be run over
-    one or several frames.  Currently this engine is run in the context of a single map.
+    The event engine checks to see if a group of conditions have been met
+    and then executes a set of actions.
 
-    Any actions or conditions executed on one map will be reset when the map is
-    changed.
-
+    Actions in the same MapEvent are not run concurrently, and they can be
+    run over one or several frames.
     """
 
-    def __init__(self, world):
+    def __init__(self, world, events):
         self.world = world
-
+        self.events = events
         self.conditions = dict()
         self.actions = dict()
         self.running_events = dict()
-        self.name = "Event"
-        self.current_map = None
-        self.timer = 0.0
-        self.wait = 0.0
-        self.button = None
-
-        # debug
         self.partial_events = list()
 
         self.load_plugins(paths.CONDITIONS_PATH, "conditions")
         self.load_plugins(paths.ACTIONS_PATH, "actions")
-
-    def reset(self):
-        """ Clear out running events.  Use when changing maps.
-
-        :return:
-        """
-        self.running_events = dict()
-        self.current_map = None
-        self.timer = 0.0
-        self.wait = 0.0
-        self.button = None
 
     def load_plugins(self, path, category):
         """ Load classes and store for use later
@@ -305,7 +284,7 @@ class EventEngine(object):
             self.partial_events.append(conds)
 
         else:
-            # optimal, less debug
+            # optimal, less debug information available
             if all(map(self.check_condition, map_event.conds)):
                 self.start_event(map_event)
 
@@ -328,8 +307,11 @@ class EventEngine(object):
 
         :rtype: None
         """
-        # debug
         self.partial_events = list()
+        # NOTE: there is a potential bug here; if/when a condition here starts
+        # a new action, that action will be updated immediately after with a time
+        # delta.  the dt for new actions should be essentially 0, but in this case
+        # it will be some value greater.
         self.check_conditions()
         self.update_running_events(dt)
 
@@ -342,15 +324,7 @@ class EventEngine(object):
         :returns: None
 
         """
-        # do the "init" events.  this will be done just once
-        # TODO: find solution that doesn't nuke the init list
-        # TODO: make event engine generic, so can be used in global scope, not just maps
-        if self.world.inits:
-            self.process_map_events(self.world.inits)
-            self.world.inits = list()
-
-        # process any other events
-        self.process_map_events(self.world.events)
+        self.process_map_events(self.events)
 
     def update_running_events(self, dt):
         """ Update the events that are running

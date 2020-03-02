@@ -10,14 +10,13 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import itertools
 import os
 
-import pygame
 import pyscroll
 import pytmx
 from pytmx.util_pygame import load_pygame
 
+from tuxemon.compat import Rect
 from tuxemon.core import prepare, pyganim
 from tuxemon.core.graphics import scaled_image_loader, load_and_scale
 from tuxemon.core.map import facing
@@ -25,7 +24,6 @@ from tuxemon.core.prepare import CONFIG
 from tuxemon.core.tools import nearest
 
 # reference direction and movement states to animation names
-# this dictionary is kinda wip, idk
 animation_mapping = {
     True: {
         'up': 'back_walk',
@@ -43,16 +41,13 @@ animation_mapping = {
 class MapSprite(object):
     """ WIP.  View of an NPC on the map
 
-    This is largely the code from the NPC class
-
+    This is largely existing code from the NPC class
     """
 
     def __init__(self, sprite_name):
         self.sprite_name = sprite_name
         self.standing = dict()
         self.sprite = dict()
-        self.width = 0
-        self.height = 0
         self.moveConductor = pyganim.PygConductor()
 
     def load_sprites(self):
@@ -66,9 +61,6 @@ class MapSprite(object):
             filename = "{}_{}.png".format(self.sprite_name, standing_type)
             path = os.path.join("sprites", filename)
             self.standing[standing_type] = load_and_scale(path)
-
-        # this is the size used for collision testing
-        self.width, self.height = self.standing["front"].get_size()
 
         # avoid cutoff frames when steps don't line up with tile movement
         frames = 3
@@ -119,6 +111,20 @@ class MapSprite(object):
         return [(get_frame(frame_dict, state), npc.tile_pos, layer)]
 
 
+class SpriteCache(object):
+    def __init__(self):
+        self.sprites = dict()
+
+    def get(self, slug):
+        try:
+            return self.sprites[slug]
+        except KeyError:
+            sprite = MapSprite(slug)
+            sprite.load_sprites()
+            self.sprites[slug] = sprite
+            return sprite
+
+
 class MapView(object):
     """
 
@@ -128,35 +134,20 @@ class MapView(object):
 
     """
 
-    def __init__(self, rect, world):
+    def __init__(self, world):
         """ Constructor
 
         :param Rect rect: Area of screen to draw the map
         :param World world: World to draw
         """
-        self.rect = rect
         self.world = world
         self.map_animations = dict()
         self.tracked_npc = None
-        self._sprites = dict()  # npc => sprite/avatar mapping
         self.renderer = None
-
-    def initialize_renderer(self, filename):
-        """ Initialize the renderer for the map and sprites
-        """
-        # TODO: load tiles from the internal game format (pending
-        if prepare.CONFIG.scaling:
-            map_data = pytmx.TiledMap(filename,
-                                      image_loader=scaled_image_loader,
-                                      pixelalpha=True)
-            map_data.tilewidth, map_data.tileheight = prepare.TILE_SIZE
-        else:
-            map_data = load_pygame(filename, pixelalpha=True)
-
-        self.map_animations = dict()
-        visual_data = pyscroll.data.TiledMapData(map_data)
-        clamp = True
-        return pyscroll.BufferedRenderer(visual_data, prepare.SCREEN_SIZE, clamp_camera=clamp, tall_sprites=2)
+        self.sprite_layer = 0
+        self.tilewidth = None
+        self.tileheight = None
+        self.sprites = SpriteCache()
 
     def follow(self, entity):
         self.tracked_npc = entity
@@ -167,36 +158,29 @@ class MapView(object):
         :param Rect rect: Area to draw to
         :param Surface surface: Target surface
         """
+        # TODO: make more robust to handle no tracking, and tracking other npcs
         if self.tracked_npc is not None:
-            # Renderers are specific to a single map.  If a map is not set,
-            # there will be no renderer and there is no need to draw anything.
             if self.renderer is None:
                 map_name = self.tracked_npc.map_name
                 filename = prepare.fetch("maps", map_name)
-                self.renderer = self.initialize_renderer(filename)
+                size = rect.size if rect else prepare.SCREEN_SIZE
+                self.renderer = self.initialize_renderer(size, filename)
 
-        # interlace player sprites with tiles surfaces.
-        world_surfaces = list()
+            # get tracked npc coords to center map
+            cx, cy = nearest(self.project(self.tracked_npc.tile_pos))
+            cx += self.tilewidth // 2
+            cy += self.tileheight // 2
+            self.renderer.center((cx, cy))
 
-        # get player coords to center map
-        cx, cy = nearest(self.project(self.tracked_npc.tile_pos))
-
-        print(self.tracked_npc.tile_pos)
-
-        # offset center point for player sprite
-        cx += prepare.TILE_SIZE[0] // 2
-        cy += prepare.TILE_SIZE[1] // 2
-
-        # center the map on center of player sprite
-        # must center map before getting sprite coordinates
-        self.renderer.center((cx, cy))
+        # if we are not tacking an npc, we may not have a renderer
+        if self.renderer is None:
+            return
 
         # get npc surfaces/sprites
-        # TODO: filter by map
+        world_surfaces = list()
         for npc in self.world.get_all_entities_on_map(None):
-            sprite = MapSprite(npc.sprite_name)
-            sprite.load_sprites()
-            world_surfaces.extend(sprite.get_current_npc_surface(npc, 5))
+            sprite = self.sprites.get(npc.sprite_name)
+            world_surfaces.extend(sprite.get_current_npc_surface(npc, self.sprite_layer))
 
         # get map_animations
         for anim_data in self.map_animations.values():
@@ -205,9 +189,6 @@ class MapView(object):
                 frame = (anim.getCurrentFrame(), anim_data["position"], anim_data['layer'])
                 world_surfaces.append(frame)
 
-        # position the surfaces correctly
-        # pyscroll expects surfaces in screen coords, so they are
-        # converted from world to screen coords here
         screen_surfaces = list()
         for frame in world_surfaces:
             s, c, l = frame
@@ -216,28 +197,44 @@ class MapView(object):
             c = self.get_pos_from_tilepos(c)
 
             # TODO: better handling of tall sprites
-            # handle tall sprites
             h = s.get_height()
-            if h > prepare.TILE_SIZE[1]:
+            if h > self.tileheight:
                 # offset for center and image height
                 c = nearest((c[0], c[1] - h // 2))
 
+            # TODO: filter the off-screen sprites so they are not drawn
             screen_surfaces.append((s, c, l))
 
         # draw the map and sprites
-        self.rect = self.renderer.draw(surface, surface.get_rect(), screen_surfaces)
+        self.renderer.draw(surface, surface.get_rect(), screen_surfaces)
 
-        # If we want to draw the collision map for debug purposes
-        if prepare.CONFIG.collision_map:
-            self.debug_drawing(surface)
+    def initialize_renderer(self, size, filename):
+        """ Initialize the renderer for the map and sprites
+        """
+        # TODO: load tiles from the internal game format (pending
+        if prepare.CONFIG.scaling:
+            map_data = pytmx.TiledMap(filename,
+                                      image_loader=scaled_image_loader,
+                                      pixelalpha=True)
+            map_data.tilewidth, map_data.tileheight = prepare.TILE_SIZE
+            self.tilewidth, self.tileheight = prepare.TILE_SIZE
+        else:
+            map_data = load_pygame(filename, pixelalpha=True)
+            self.tilewidth = map_data.tilewidth
+            self.tileheight = map_data.tileheight
+
+        self.sprite_layer = int(map_data.properties.get("sprite_layer", 2))
+        self.map_animations = dict()
+        visual_data = pyscroll.data.TiledMapData(map_data)
+        clamp = True
+        return pyscroll.BufferedRenderer(visual_data, size, clamp_camera=clamp, tall_sprites=2)
 
     def get_pos_from_tilepos(self, tile_position):
         """ Returns the map pixel coordinate based on tile position.
 
-        USE this to draw to the screen
+        Use this to draw to the screen
 
         :param List tile_position: An [x, y] tile position.
-
         :rtype: Tuple[int, int]
         """
         cx, cy = self.renderer.get_center_offset()
@@ -247,53 +244,16 @@ class MapView(object):
         return x, y
 
     def project(self, position):
-        self.tile_size = prepare.TILE_SIZE
-        return position[0] * self.tile_size[0], position[1] * self.tile_size[1]
+        return position[0] * self.tilewidth, position[1] * self.tileheight
 
     def _collision_box_to_pgrect(self, box):
-        """Returns a pygame.Rect (in screen-coords) version of a collision box (in world-coords).
+        """Returns a Rect (in screen-coords) version of a collision box (in world-coords).
         """
-
-        # For readability
         x, y = self.get_pos_from_tilepos(box)
-        tw, th = self.tile_size
-
-        return pygame.Rect(x, y, tw, th)
+        return Rect(x, y, self.tilewidth, self.tileheight)
 
     def _npc_to_pgrect(self, npc):
-        """Returns a pygame.Rect (in screen-coords) version of an NPC's bounding box.
+        """Returns a Rect (in screen-coords) version of an NPC's bounding box.
         """
-        pos = self.get_pos_from_tilepos(npc.tile_pos)
-        return pygame.Rect(pos, self.tile_size)
-
-    def debug_drawing(self, surface):
-        from pygame.gfxdraw import box
-
-        surface.lock()
-
-        # draw events
-        for event in self.game.events:
-            topleft = self.get_pos_from_tilepos((event.x, event.y))
-            size = self.project((event.w, event.h))
-            rect = topleft, size
-            box(surface, rect, (0, 255, 0, 128))
-
-        # We need to iterate over all collidable objects.  So, let's start
-        # with the walls/collision boxes.
-        box_iter = itertools.imap(self._collision_box_to_pgrect, self.collision_map)
-
-        # Next, deal with solid NPCs.
-        npc_iter = itertools.imap(self._npc_to_pgrect, self.npcs.values())
-
-        # draw noc and wall collision tiles
-        red = (255, 0, 0, 128)
-        for item in itertools.chain(box_iter, npc_iter):
-            box(surface, item, red)
-
-        # draw center lines to verify camera is correct
-        w, h = surface.get_size()
-        cx, cy = w // 2, h // 2
-        pygame.draw.line(surface, (255, 50, 50), (cx, 0), (cx, h))
-        pygame.draw.line(surface, (255, 50, 50), (0, cy), (w, cy))
-
-        surface.unlock()
+        x, y = self.get_pos_from_tilepos(npc.tile_pos)
+        return Rect(x, y, self.tilewidth, self.tileheight)

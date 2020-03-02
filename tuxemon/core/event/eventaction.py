@@ -33,6 +33,8 @@ from collections import namedtuple
 
 from six.moves import zip_longest
 
+from tuxemon.core.tools import split_escaped
+
 logger = logging.getLogger(__name__)
 
 
@@ -135,17 +137,6 @@ class EventAction(object):
             self.parameters = None
 
         self._done = False
-
-    @classmethod
-    def from_string(cls, text):
-        words = text.split(' ', 2)
-        words = action_string.split(' ', 1)
-        act_type = words[0]
-        if len(words) > 1:
-            args = split_escaped(words[1])
-        else:
-            args = list()
-        return cls(act_type, args)
 
     def cast_values(self, parameters):
         """ Change all the string values to the expected type

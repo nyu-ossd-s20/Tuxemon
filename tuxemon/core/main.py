@@ -33,10 +33,10 @@ from __future__ import unicode_literals
 
 import logging
 
-from tuxemon.core import prepare
 from tuxemon.core import log
+from tuxemon.core import prepare
 from tuxemon.core.player import Player
-from tuxemon.core.world import World
+from tuxemon.core.session import local_session
 
 logger = logging.getLogger(__name__)
 
@@ -68,15 +68,21 @@ def main(load_slot=None):
     # a system for states to clean up their dirty screen areas.
     control.push_state("BackgroundState")
 
-    # basically the main menu
     # control.push_state("StartState")
 
     player = Player(prepare.CONFIG.player_npc)
-    player.tile_pos = 5, 5
     player.map_name = prepare.CONFIG.starting_map
     player.map_name = "map1.tmx"
+    player.map_name = "tuxe_mart.tmx"
+
+    local_session.control = control
+    local_session.world = control.world
+    local_session.player = player
+
     control.world.add_entity(player)
     state = control.push_state("WorldState", world=control.world)
+
+    # TODO: remove this hack
     state.set_player_npc(player)
 
     # if load_slot:
@@ -109,18 +115,3 @@ def main(load_slot=None):
 
     control.main()
     # pygame.quit()
-
-
-def headless():
-    """Sets up out headless server and start the game.
-
-    :rtype: None
-    :returns: None
-
-    """
-    from tuxemon.core.control import HeadlessControl
-
-    control = HeadlessControl()
-    control.auto_state_discovery()
-    control.push_state("HeadlessServerState")
-    control.main()

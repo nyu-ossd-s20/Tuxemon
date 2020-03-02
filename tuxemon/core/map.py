@@ -2,10 +2,10 @@ import logging
 
 from tuxemon.compat import Rect
 from tuxemon.core.euclid import Point2, Vector3, Vector2
+from tuxemon.core.event.eventengine import EventEngine
 from tuxemon.core.tools import nearest
 
 logger = logging.getLogger(__name__)
-
 
 # direction => vector
 dirs3 = {
@@ -134,21 +134,22 @@ class TuxemonMap(object):
         Create a list of all pairs of adjacent tiles that are impassable (aka walls)
         example: ((5,4),(5,3), both)
 
-        :param List events:
-        :param List inits:
-        :param List interacts:
-        :param Dict collision_map:
-        :param Dict collisions_lines_map:
+        :param List events: List of map events
+        :param List inits: List of events to be loaded once, when map is entered
+        :param List interacts: List of intractable spaces
+        :param Dict collision_map: Collision map
+        :param Dict collisions_lines_map: Collision map of lines
         """
-        self.events = events
-        self.inits = inits
         self.interacts = interacts
         self.collision_map = collision_map
         self.collision_lines_map = collisions_lines_map
         self.npcs = dict()
+        self.event_engine = EventEngine(self, events)
+        if inits:
+            self.event_engine.process_map_events(inits)
 
     def update(self, time_delta):
-        pass
+        self.event_engine.update(time_delta)
 
     ####################################################
     #            Pathfinding and Collisions            #
@@ -371,4 +372,3 @@ class TuxemonMap(object):
         """
         pos = self.get_pos_from_tilepos(npc.tile_pos)
         return Rect(pos, self.tile_size)
-

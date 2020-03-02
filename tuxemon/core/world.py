@@ -21,15 +21,6 @@ class World(object):
         self.npcs = dict()
         self.maps = dict()
 
-        # This event engine processes global scope events
-        self.events = list()
-        self.inits = list()
-        self.interacts = list()
-        self.event_conditions = {}
-        self.event_actions = {}
-        self.event_persist = {}
-        self.event_engine = EventEngine(self)
-
     def process_platform_event(self, platform_event):
         """ Handle platform events such as key presses
 
@@ -37,7 +28,8 @@ class World(object):
         :return:
         """
         # TODO: iterate over loaded maps and process events
-        self.event_engine.process_event(platform_event)
+        # self.event_engine.process_event(platform_event)
+        pass
 
     def update(self, time_delta):
         """ Update time
@@ -47,7 +39,6 @@ class World(object):
         """
         for map_object in self.maps.values():
             map_object.update(time_delta)
-        self.event_engine.update(time_delta)
         self.move_npcs(time_delta)
 
     def add_entity(self, entity):
