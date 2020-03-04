@@ -32,14 +32,14 @@ class CombatStartedCondition(EventCondition):
     """
     name = "combat_started"
 
-    def test(self, game, condition):
+    def test(self, session, condition):
         """ Checks to see if combat has been started or not.
 
-            :param game: The main game object that contains all the game's variables.
+            :param session: The main game object that contains all the game's variables.
             :param condition: A dictionary of condition details. See :py:func:`core.map.Map.loadevents`
                 for the format of the dictionary.
 
-            :type game: core.control.Control
+            :type session: core.control.Control
             :type condition: Dictionary
 
             :rtype: Boolean
@@ -59,4 +59,4 @@ class CombatStartedCondition(EventCondition):
              'y': 11}
 
             """
-        return game.current_state.name == "CombatState"
+        return session.current_state.name == "CombatState"

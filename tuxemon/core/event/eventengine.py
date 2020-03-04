@@ -212,7 +212,7 @@ class EventEngine(object):
             logger.debug('map condition "{}" is not loaded'.format(cond_data.type))
             return False
 
-        result = map_condition.test(self.world, cond_data) == (cond_data.operator == 'is')
+        result = map_condition.test(local_session, cond_data) == (cond_data.operator == 'is')
         logger.debug('map condition "{}": {} ({})'.format(map_condition.name, result, cond_data))
         return result
 

@@ -33,7 +33,7 @@ import time
 
 import pygame as pg
 
-from tuxemon.core import cli, networking, rumble
+from tuxemon.core import cli, networking
 from tuxemon.core.clock import Clock
 from tuxemon.core.platform import android
 from tuxemon.core.state import StateManager
@@ -172,13 +172,14 @@ class Control(StateManager):
             self.draw(screen)
             flip()
 
-        self.scheduler.schedule(update, 1/100., repeat=True)
-        self.scheduler.schedule(draw, 1/self.config.fps, repeat=True)
+        self.scheduler.schedule(update, 1 / 100., repeat=True)
+        self.scheduler.schedule(draw, 1 / self.config.fps, repeat=True)
 
         while not self.exit:
             self.scheduler.tick()
             next_event = self.scheduler.get_idle_time()
-            time.sleep(next_event / 2.)
+            if next_event > .001:
+                time.sleep(next_event / 2.)
 
     def update(self, time_delta):
         """Main loop for entire game. This method gets update every frame

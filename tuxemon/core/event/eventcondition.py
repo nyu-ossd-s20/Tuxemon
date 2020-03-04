@@ -43,10 +43,10 @@ class EventCondition(object):
     def __init__(self):
         pass
 
-    def test(self, game, condition):
+    def test(self, session, condition):
         """ Return True if satisfied, or False if not
 
-        :param game:
+        :param session:
         :param condition:
         :rtype: bool
         """

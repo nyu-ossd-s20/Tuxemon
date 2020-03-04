@@ -33,14 +33,14 @@ class NPCExistsCondition(EventCondition):
     """
     name = "npc_exists"
 
-    def test(self, game, condition):
+    def test(self, session, condition):
         """ Checks to see if a particular NPC object exists in the current list of NPCs.
 
-        :param game: The main game object that contains all the game's variables.
+        :param session: The main game object that contains all the game's variables.
         :param condition: A dictionary of condition details. See :py:func:`core.map.Map.loadevents`
             for the format of the dictionary.
 
-        :type game: core.control.Control
+        :type session: core.control.Control
         :type condition: Dictionary
 
         :rtype: Boolean
@@ -64,11 +64,7 @@ class NPCExistsCondition(EventCondition):
             ...
         }
         """
-        world = game.get_state_name("WorldState")
-        if not world:
-            return
-
-        if get_npc(game, condition.parameters[0]):
+        if get_npc(session, condition.parameters[0]):
             return True
         else:
             return False

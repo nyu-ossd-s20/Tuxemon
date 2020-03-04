@@ -32,14 +32,14 @@ class TrueCondition(EventCondition):
     """
     name = "true"
 
-    def test(self, game, condition):
+    def test(self, session, condition):
         """ This function always returns true unless the operator is set to "is_not"
 
-        :param game: The main game object that contains all the game's variables.
+        :param session: The main game object that contains all the game's variables.
         :param condition: A dictionary of condition details. See :py:func:`core.map.Map.loadevents`
             for the format of the dictionary.
 
-        :type game: core.control.Control
+        :type session: core.control.Control
         :type condition: Dictionary
 
         :rtype: Boolean

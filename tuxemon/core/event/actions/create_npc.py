@@ -47,10 +47,7 @@ class CreateNpcAction(EventAction):
     ]
 
     def start(self):
-        # Get a copy of the world state.
-        world = self.session.control.get_state_name("WorldState")
-        if not world:
-            return
+        world = self.session.world
 
         # Get the npc's parameters from the action
         slug = self.parameters.npc_slug

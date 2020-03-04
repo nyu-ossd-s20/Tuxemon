@@ -47,7 +47,8 @@ class World(object):
         :return:
         """
         if entity.map not in self.maps:
-            entity.map = self.get_map(entity.map_name)
+            if entity.map_name:
+                entity.map = self.get_map(entity.map_name)
         self.npcs[entity.slug] = entity
 
     def get_entity(self, slug):

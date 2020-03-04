@@ -37,6 +37,7 @@ import logging
 
 import natsort
 import pytmx
+from natsort import natsorted
 
 from tuxemon.core.event import EventObject
 from tuxemon.core.event import MapAction
@@ -213,11 +214,11 @@ class TMXMapLoader(object):
 
         # Conditions & actions are stored as Tiled properties.
         # We need to sort them by name, so that "act1" comes before "act2" and so on..
-        keys = natsort.natsorted(obj.properties.keys())
+        keys = natsorted(obj.properties.keys())
 
-        for key, value in natsort.natsorted(obj.properties.items()):
+        for key, value in natsorted(obj.properties.items()):
             if key.startswith('cond'):
-                cond_type, args, operator = parse_condition_string(value)
+                operator, cond_type, args = parse_condition_string(value)
                 condition = MapCondition(cond_type, args, x, y, w, h, operator)
                 conds.append(condition)
 
