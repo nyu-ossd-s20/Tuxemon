@@ -105,5 +105,5 @@ def main(load_slot=None):
         for i in range(100):
             action("add_item", ("apple",))
 
-    control.main()
+    control.run()
     # pygame.quit()

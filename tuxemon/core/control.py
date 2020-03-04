@@ -156,32 +156,24 @@ class Control(StateManager):
 
         return game_event
 
-    def main(self):
+    def run(self):
         """ Initiates the main game loop. Since we are using Asteria networking
         to handle network events, we pass this core.control.Control instance to
         networking which in turn executes the "main_loop" method every frame.
         This leaves the networking component responsible for the main loop.
 
         :rtype: None
-        :returns: None
-
         """
         update = self.update
         screen = self.screen
         flip = pg.display.update
-        clock = time.time
-        frame_length = (1. / self.config.fps)
-        time_since_draw = 0
-        last_update = clock()
-        fps_timer = 0
-        frames = 0
 
         def draw(dt):
             self.draw(screen)
             flip()
 
         self.scheduler.schedule(update, 1/100., repeat=True)
-        self.scheduler.schedule(draw, 1/60., repeat=True)
+        self.scheduler.schedule(draw, 1/self.config.fps, repeat=True)
 
         while not self.exit:
             self.scheduler.tick()
