@@ -35,6 +35,7 @@ from tuxemon.constants import paths
 from tuxemon.core import plugin
 from tuxemon.core import prepare
 from tuxemon.core.platform.const import buttons
+from tuxemon.core.session import local_session
 
 logger = logging.getLogger(__name__)
 
@@ -172,7 +173,8 @@ class EventEngine(object):
             logger.error(error)
 
         else:
-            return action(self.world, parameters)
+            # TODO: the 1st parameter specifies the player/session
+            return action(local_session, parameters)
 
     def get_condition(self, name):
         """ Get a condition that is loaded into the engine

@@ -35,6 +35,6 @@ class QuitAction(EventAction):
 
     def start(self):
         # TODO: API
-        self.game._wants_to_exit = True
-        self.game.exit = True
-        self.game.done = True
+        self.session.control._wants_to_exit = True
+        self.session.control.exit = True
+        self.session.control.done = True

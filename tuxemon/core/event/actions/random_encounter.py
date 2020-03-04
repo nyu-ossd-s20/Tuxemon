@@ -54,7 +54,7 @@ class RandomEncounterAction(EventAction):
     ]
 
     def start(self):
-        player = self.game.player1
+        player = self.session.player
 
         # Don't start a battle if we don't even have monsters in our party yet.
         if not check_battle_legal(player):
@@ -74,8 +74,8 @@ class RandomEncounterAction(EventAction):
             monsters.load("monster")
 
             # Stop movement and keypress on the server.
-            if self.game.isclient or self.game.ishost:
-                self.game.client.update_player(player.facing, event_type="CLIENT_START_BATTLE")
+            if self.session.control.isclient or self.session.control.ishost:
+                self.session.control.client.update_player(player.facing, event_type="CLIENT_START_BATTLE")
 
             npc = _create_monster_npc(encounter)
 
@@ -89,27 +89,27 @@ class RandomEncounterAction(EventAction):
 
             # Add our players and setup combat
             # "queueing" it will mean it starts after the top of the stack is popped (or replaced)
-            self.game.queue_state("CombatState", players=(player, npc), combat_type="monster", graphics=env['battle_graphics'])
+            self.session.control.queue_state("CombatState", players=(player, npc), combat_type="monster", graphics=env['battle_graphics'])
 
             # stop the player
-            world = self.game.get_state_name("WorldState")
+            world = self.session.control.get_state_name("WorldState")
             world.lock_controls()
             world.stop_player()
 
             # flash the screen
-            self.game.push_state("FlashTransition")
+            self.session.control.push_state("FlashTransition")
 
             # Start some music!
             filename = env['battle_music']
             mixer.music.load(tools.transform_resource_filename('music', filename))
             mixer.music.play(-1)
-            if self.game.current_music["song"]:
-                self.game.current_music["previoussong"] = self.game.current_music["song"]
-            self.game.current_music["status"] = "playing"
-            self.game.current_music["song"] = filename
+            if self.session.control.current_music["song"]:
+                self.session.control.current_music["previoussong"] = self.session.control.current_music["song"]
+            self.session.control.current_music["status"] = "playing"
+            self.session.control.current_music["song"] = filename
 
     def update(self):
-        if self.game.get_state_name("CombatState") is None:
+        if self.session.control.get_state_name("CombatState") is None:
             self.stop()
 
 

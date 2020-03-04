@@ -33,8 +33,8 @@ from __future__ import unicode_literals
 
 import logging
 
-from tuxemon.core import log
-from tuxemon.core import prepare
+from tuxemon.core import log, prepare
+from tuxemon.core.control import Control
 from tuxemon.core.player import Player
 from tuxemon.core.session import local_session
 
@@ -50,15 +50,10 @@ def main(load_slot=None):
 
     """
     log.configure()
-
-    from tuxemon.core.control import Control
-
     prepare.init()
+
     control = Control(prepare.CONFIG)
     control.auto_state_discovery()
-
-    # global/singleton hack for now
-    setattr(prepare, "GLOBAL_CONTROL", control)
 
     # background state is used to prevent other states from
     # being required to track dirty screen areas.  for example,
@@ -80,10 +75,7 @@ def main(load_slot=None):
     local_session.player = player
 
     control.world.add_entity(player)
-    state = control.push_state("WorldState", world=control.world)
-
-    # TODO: remove this hack
-    state.set_player_npc(player)
+    control.push_state("WorldState", world=control.world, player=player)
 
     # if load_slot:
     #     control.push_state("LoadMenuState", load_slot=load_slot)

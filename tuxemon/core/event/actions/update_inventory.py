@@ -40,7 +40,7 @@ class UpdateInventoryAction(EventAction):
 	]
 
 	def start(self):
-		npc = get_npc(self.game, self.parameters.npc_slug)
+		npc = get_npc(self.session, self.parameters.npc_slug)
 		if self.parameters.inventory_slug is None:
 			return
 

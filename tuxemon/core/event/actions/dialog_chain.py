@@ -61,14 +61,14 @@ class DialogChainAction(EventAction):
     def start(self):
         # hack to allow unescaped commas in the dialog string
         text = ', '.join(self.raw_parameters)
-        text = replace_text(self.game, text)
+        text = replace_text(self.session, text)
 
         # If text is "${{end}}, then close the current dialog
         if not text == "${{end}}":
             self.stop()
 
             # is a dialog already open?
-            dialog = self.game.get_state_name("DialogState")
+            dialog = self.session.control.get_state_name("DialogState")
 
             if dialog:
                 # yes, so just add text to it
@@ -81,9 +81,9 @@ class DialogChainAction(EventAction):
         # hack to allow unescaped commas in the dialog string
         text = ', '.join(self.raw_parameters)
         if text == "${{end}}":
-            if self.game.get_state_name("DialogState") is None:
+            if self.session.control.get_state_name("DialogState") is None:
                 self.stop()
 
     def open_dialog(self, initial_text):
         logger.info("Opening chain dialog window")
-        open_dialog(self.game, [initial_text])
+        open_dialog(self.session, [initial_text])

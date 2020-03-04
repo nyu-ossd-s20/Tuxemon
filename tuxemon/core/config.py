@@ -112,14 +112,9 @@ class TuxemonConfig(object):
         # not configurable from the file yet
         self.mods = ["tuxemon"]
 
+        # TODO: DEBUG.  remove before merge
+        self.starting_map = "bedroom_test.tmx"
         assert self.starting_map == "bedroom_test.tmx"
-
-class HeadlessConfig(object):
-    """Handles loading of the configuration file for the headless server.
-    """
-
-    def __init__(self, file_default="tuxemon.cfg", file_config="tuxemon.cfg"):
-        raise RuntimeError("deprecated")
 
 
 def get_defaults():

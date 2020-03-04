@@ -64,16 +64,16 @@ class TranslatedDialogAction(EventAction):
     def start(self):
         self.open_dialog(
             process_translate_text(
-                self.game,
+                self.session,
                 self.parameters.key,
                 self.raw_parameters[1:],
             )
         )
 
     def update(self):
-        if self.game.get_state_name("DialogState") is None:
+        if self.session.control.get_state_name("DialogState") is None:
             self.stop()
 
     def open_dialog(self, pages):
         logger.info("Opening dialog window")
-        open_dialog(self.game, pages)
+        open_dialog(self.session, pages)

@@ -36,11 +36,11 @@ import logging
 
 import pygame
 
-from tuxemon.core import networking
-from tuxemon.core import prepare, state
+from tuxemon.core import networking, prepare, state, rumble
 from tuxemon.core.map_view import MapView
 from tuxemon.core.platform.const import buttons, events, intentions
 from tuxemon.core.platform.events import PlayerInput
+from tuxemon.core.session import local_session
 from tuxemon.core.tools import nearest
 
 logger = logging.getLogger(__name__)
@@ -72,9 +72,11 @@ class WorldState(state.State):
 
     def __init__(self, *args, **kwargs):
         super(WorldState, self).__init__(*args, **kwargs)
-        self.player_npc = None
         self.allow_player_movement = None
         self.wants_to_move_player = None
+        self.current_music = {"status": "stopped", "song": None, "previoussong": None}
+        self.rumble_manager = rumble.RumbleManager()
+        self.rumble = self.rumble_manager.rumbler
 
     def startup(self, *args, **kwargs):
         self.world = kwargs["world"]
@@ -100,6 +102,8 @@ class WorldState(state.State):
         # the middle of a transition.
         self.delayed_facing = None
         self.view = MapView(self.world)
+        self.player_npc = kwargs.get("player")
+        self.set_player_npc(self.player_npc)
 
     def resume(self):
         """ Called after returning focus to this state

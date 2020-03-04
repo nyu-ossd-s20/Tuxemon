@@ -52,7 +52,7 @@ class SetNpcAttributeAction(EventAction):
     ]
 
     def start(self):
-        world = self.game.get_state_name("WorldState")
+        world = self.session.control.get_state_name("WorldState")
         if not world:
             return
 

@@ -88,18 +88,6 @@ class Control(StateManager):
             # self.combat_engine = CombatEngine(self)
             # self.combat_router = CombatRouter(self, self.combat_engine)
 
-        # TODO: Move music handling into client view
-        self.current_music = {"status": "stopped", "song": None, "previoussong": None}
-
-        # TODO: This needs to be part of the current game session, but not directly
-        #       part of the World, Control, or ClientView
-        self.player1 = None
-
-        # TODO: move to platform
-        # Set up rumble support for gamepads
-        self.rumble_manager = rumble.RumbleManager()
-        self.rumble = self.rumble_manager.rumbler
-
         # Set up the command line. This provides a full python shell for
         # troubleshooting. You can view and manipulate any variables in
         # the game.
@@ -179,7 +167,6 @@ class Control(StateManager):
 
         """
         update = self.update
-        draw = self.draw
         screen = self.screen
         flip = pg.display.update
         clock = time.time
@@ -189,19 +176,17 @@ class Control(StateManager):
         fps_timer = 0
         frames = 0
 
-        while not self.exit:
-            clock_tick = clock() - last_update
-            last_update = clock()
-            time_since_draw += clock_tick
-            update(clock_tick)
-            if time_since_draw >= frame_length:
-                time_since_draw -= frame_length
-                draw(screen)
-                flip()
-                frames += 1
+        def draw(dt):
+            self.draw(screen)
+            flip()
 
-            fps_timer, frames = self.handle_fps(clock_tick, fps_timer, frames)
-            time.sleep(.01)
+        self.scheduler.schedule(update, 1/100., repeat=True)
+        self.scheduler.schedule(draw, 1/60., repeat=True)
+
+        while not self.exit:
+            self.scheduler.tick()
+            next_event = self.scheduler.get_idle_time()
+            time.sleep(next_event / 2.)
 
     def update(self, time_delta):
         """Main loop for entire game. This method gets update every frame
@@ -309,14 +294,3 @@ class Control(StateManager):
                 return 0, 0
             return fps_timer, frames
         return 0, 0
-
-    def get_state_name(self, name):
-        """ Query the state stack for a state by the name supplied
-
-        :str name: str
-        :rtype: State, None
-        """
-        for state in self.active_states:
-            if state.__class__.__name__ == name:
-                return state
-        return None

@@ -42,7 +42,6 @@ import re
 
 from tuxemon.constants import paths
 from tuxemon.core import config
-from tuxemon.core.session import Session
 
 logger = logging.getLogger(__name__)
 
@@ -187,4 +186,3 @@ def fetch(*args):
             return path
 
     raise FileNotFoundError(relative_path)
-

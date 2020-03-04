@@ -1,7 +1,6 @@
 import logging
 
 from tuxemon.core import prepare
-from tuxemon.core.event.eventengine import EventEngine
 from tuxemon.core.map_loader import TMXMapLoader
 
 logger = logging.getLogger(__name__)

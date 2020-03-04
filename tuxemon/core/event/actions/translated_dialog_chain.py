@@ -68,12 +68,12 @@ class TranslatedDialogChainAction(EventAction):
         self.stop()
 
         pages = process_translate_text(
-            self.game,
+            self.session,
             key,
             self.raw_parameters[1:],
         )
 
-        dialog = self.game.get_state_name("DialogState")
+        dialog = self.session.control.get_state_name("DialogState")
         if dialog:
             dialog.text_queue += pages
         else:
@@ -81,9 +81,9 @@ class TranslatedDialogChainAction(EventAction):
 
     def update(self):
         if self.parameters.key == "${{end}}":
-            if self.game.get_state_name("DialogState") is None:
+            if self.session.control.get_state_name("DialogState") is None:
                 self.stop()
 
     def open_dialog(self, pages):
         logger.info("Opening chain dialog window")
-        open_dialog(self.game, pages)
+        open_dialog(self.session, pages)

@@ -10,4 +10,5 @@ class Session(object):
         self.player = player
 
 
+# will be filled in later when game starts
 local_session = Session(None, None, None)
