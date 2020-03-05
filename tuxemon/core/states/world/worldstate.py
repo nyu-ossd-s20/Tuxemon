@@ -36,6 +36,7 @@ import logging
 
 import pygame
 
+from tuxemon.compat import Rect
 from tuxemon.core import networking, prepare, state, rumble
 from tuxemon.core.map_view import MapView
 from tuxemon.core.platform.const import buttons, events, intentions
@@ -102,6 +103,7 @@ class WorldState(state.State):
         # the middle of a transition.
         self.delayed_facing = None
         self.view = MapView(self.world)
+        self.view1 = MapView(self.world)
         self.player_npc = kwargs.get("player")
         self.set_player_npc(self.player_npc)
 
@@ -207,7 +209,19 @@ class WorldState(state.State):
         :param surface:
         :return:
         """
-        self.view.draw(None, surface)
+        w, h = surface.get_size()
+
+        r0 = Rect(0, 0, w/2, h)
+        r1 = Rect(w/2, 0, w/2, h)
+
+        entity = local_session.world.get_entity("professor")
+        if entity:
+            entity.map_name = local_session.player.map_name
+            entity.map = local_session.player.map
+            self.view1.follow(entity)
+        surface.fill(0)
+        self.view.draw(r0, surface)
+        self.view1.draw(r1, surface)
         self.fullscreen_animations(surface)
 
     def translate_input_event(self, event):
@@ -245,9 +259,14 @@ class WorldState(state.State):
 
         if event.button == intentions.WORLD_MENU:
             if event.pressed:
-                logger.info("Opening main menu!")
-                self.game.release_controls()
-                self.game.push_state("WorldMenuState")
+                # logger.info("Opening main menu!")
+                # self.game.release_controls()
+                # self.game.push_state("WorldMenuState")
+                if self.player_npc == local_session.player:
+                    self.player_npc = local_session.world.get_entity("professor")
+                    self.player_npc.map = local_session.player.map
+                else:
+                    self.player_npc = local_session.player
                 return
 
         # map may not have a player registered

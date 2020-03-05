@@ -35,15 +35,12 @@ from __future__ import unicode_literals
 
 import logging
 
-import natsort
 import pytmx
 from natsort import natsorted
 
 from tuxemon.core.event import EventObject
 from tuxemon.core.event import MapAction
 from tuxemon.core.event import MapCondition
-from tuxemon.core.event.eventaction import EventAction
-from tuxemon.core.event.eventcondition import EventCondition
 from tuxemon.core.map import TuxemonMap
 from tuxemon.core.tools import split_escaped, snap_point, snap_rect, tiles_inside_aabb
 
@@ -214,8 +211,6 @@ class TMXMapLoader(object):
 
         # Conditions & actions are stored as Tiled properties.
         # We need to sort them by name, so that "act1" comes before "act2" and so on..
-        keys = natsorted(obj.properties.keys())
-
         for key, value in natsorted(obj.properties.items()):
             if key.startswith('cond'):
                 operator, cond_type, args = parse_condition_string(value)
@@ -227,6 +222,7 @@ class TMXMapLoader(object):
                 action = MapAction(act_type, args)
                 acts.append(action)
 
+        keys = natsorted(obj.properties.keys())
         for key in keys:
             if key.startswith('behav'):
                 behav_string = obj.properties[key]
@@ -237,7 +233,6 @@ class TMXMapLoader(object):
                 else:
                     raise Exception
 
-        # TODO: move this to some post-creation function, as more may be needed
         # add a player_facing_tile condition automatically
         if obj.type == "interact":
             cond_data = MapCondition("player_facing_tile", list(), x, y, w, h, "is")

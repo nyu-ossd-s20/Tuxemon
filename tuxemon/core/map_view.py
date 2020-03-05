@@ -158,6 +158,9 @@ class MapView(object):
         :param Rect rect: Area to draw to
         :param Surface surface: Target surface
         """
+        if rect is None:
+            rect = surface.get_rect()
+
         # TODO: make more robust to handle no tracking, and tracking other npcs
         if self.tracked_npc is not None:
             if self.renderer is None:
@@ -201,12 +204,13 @@ class MapView(object):
             if h > self.tileheight:
                 # offset for center and image height
                 c = nearest((c[0], c[1] - h // 2))
+            c = c[0] + rect.left, c[1] + rect.top
 
             # TODO: filter the off-screen sprites so they are not drawn
             screen_surfaces.append((s, c, l))
 
         # draw the map and sprites
-        self.renderer.draw(surface, surface.get_rect(), screen_surfaces)
+        self.renderer.draw(surface, rect, screen_surfaces)
 
     def initialize_renderer(self, size, filename):
         """ Initialize the renderer for the map and sprites
