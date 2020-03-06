@@ -34,7 +34,7 @@ from __future__ import unicode_literals
 
 import logging
 
-import tuxemon.core.graphics
+from tuxemon.core import graphics
 from tuxemon.core import tools
 from tuxemon.core import pyganim
 
@@ -63,7 +63,7 @@ class UserInterface(object):
 
         # Handle loading a single image, multiple images, or surfaces
         if images_type == 'str' or images_type == 'unicode':
-            surface = tuxemon.core.graphics.load_and_scale(images)
+            surface = graphics.load_and_scale(images)
             self.images = [(surface, animation_speed)]
 
         elif images_type == 'list' or images_type == 'tuple':
@@ -73,7 +73,7 @@ class UserInterface(object):
                 item_type = type(item).__name__
 
                 if item_type == 'str' or item_type == 'unicode':
-                    surface = tuxemon.core.graphics.load_and_scale(images)
+                    surface = graphics.load_and_scale(images)
                 else:
                     surface = item
                 self.images.append((surface, animation_speed))

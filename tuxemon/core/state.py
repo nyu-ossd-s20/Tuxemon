@@ -37,7 +37,7 @@ from abc import ABCMeta
 from importlib import import_module
 
 import pygame
-import tuxemon.core.graphics
+from tuxemon.core import graphics
 from tuxemon.compat import Rect
 from tuxemon.constants import paths
 from tuxemon.core import prepare
@@ -103,7 +103,7 @@ class State(object):
         :returns: core.sprite.Sprite
         """
         layer = kwargs.pop('layer', 0)
-        sprite = tuxemon.core.graphics.load_sprite(filename, **kwargs)
+        sprite = graphics.load_sprite(filename, **kwargs)
         self.sprites.add(sprite, layer=layer)
         return sprite
 

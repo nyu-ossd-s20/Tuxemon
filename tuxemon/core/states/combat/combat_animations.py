@@ -13,7 +13,7 @@ from functools import partial
 
 import pygame
 
-import tuxemon.core.graphics
+from tuxemon.core import graphics
 from tuxemon.core import tools
 from tuxemon.core.locale import T
 from tuxemon.core.menu.interface import HpBar, ExpBar
@@ -21,7 +21,7 @@ from tuxemon.core.menu.menu import Menu
 from tuxemon.core.pyganim import PygAnimation
 from tuxemon.core.sprite import Sprite
 from tuxemon.core.tools import scale, scale_sequence
-from tuxemon.core.graphics import scale_sprite
+from graphics.import scale_sprite
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +141,7 @@ class CombatAnimations(Menu):
 
         # convert the capdev sprite so we can fade it easily
         def func():
-            capdev.image = tuxemon.core.graphics.convert_alpha_to_colorkey(capdev.image)
+            capdev.image = graphics.convert_alpha_to_colorkey(capdev.image)
             self.animate(capdev.image, set_alpha=0, initial=255, duration=fade_duration)
 
         self.task(func, delay)
@@ -163,7 +163,7 @@ class CombatAnimations(Menu):
         images = list()
         for fn in ["capture%02d.png" % i for i in range(1, 10)]:
             fn = 'animations/technique/' + fn
-            image = tuxemon.core.graphics.load_and_scale(fn)
+            image = graphics.load_and_scale(fn)
             images.append((image, .07))
 
         delay = 1.3
@@ -390,7 +390,7 @@ class CombatAnimations(Menu):
                                           layer=hud_layer)
 
             # convert alpha image to image with a colorkey so we can set_alpha
-            sprite.image = tuxemon.core.graphics.convert_alpha_to_colorkey(sprite.image)
+            sprite.image = graphics.convert_alpha_to_colorkey(sprite.image)
             sprite.image.set_alpha(0)
             animate = partial(self.animate, duration=1.5, delay=2.2 + index * .2)
             animate(sprite.image, set_alpha=255, initial=0)
@@ -445,7 +445,7 @@ class CombatAnimations(Menu):
                                           layer=hud_layer)
 
             # convert alpha image to image with a colorkey so we can set_alpha
-            sprite.image = tuxemon.core.graphics.convert_alpha_to_colorkey(sprite.image)
+            sprite.image = graphics.convert_alpha_to_colorkey(sprite.image)
             sprite.image.set_alpha(0)
             animate = partial(self.animate, duration=0.1, delay=0.1)
             animate(sprite.image, set_alpha=255, initial=0)
@@ -537,7 +537,7 @@ class CombatAnimations(Menu):
         images = list()
         for fn in ["capture%02d.png" % i for i in range(1, 10)]:
             fn = 'animations/technique/' + fn
-            image = tuxemon.core.graphics.load_and_scale(fn)
+            image = graphics.load_and_scale(fn)
             images.append((image, .07))
 
         tech = PygAnimation(images, False)

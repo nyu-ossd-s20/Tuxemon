@@ -8,7 +8,7 @@ from functools import partial
 
 import pygame
 
-import tuxemon.core.graphics
+from tuxemon.core import graphics
 from tuxemon.core import prepare, state, tools
 from tuxemon.core.menu.interface import MenuCursor, MenuItem
 from tuxemon.core.sprite import RelativeGroup, VisualSpriteList
@@ -278,18 +278,18 @@ class Menu(state.State):
             # load and scale the _background
             background = None
             if self.background_filename:
-                background = tuxemon.core.graphics.load_image(self.background_filename)
+                background = graphics.load_image(self.background_filename)
 
             # load and scale the menu borders
             border = None
             if self.draw_borders:
-                border = tuxemon.core.graphics.load_and_scale(self.borders_filename)
+                border = graphics.load_and_scale(self.borders_filename)
 
             # set the helper to draw the _background
             self.window = GraphicBox(border, background, self.background_color)
 
         # handle the arrow cursor
-        image = tuxemon.core.graphics.load_and_scale(self.cursor_filename)
+        image = graphics.load_and_scale(self.cursor_filename)
         self.arrow = MenuCursor(image)
 
     def show_cursor(self):

@@ -39,6 +39,7 @@ def is_number(value):
         float(value)
     except (ValueError, TypeError):
         raise ValueError
+
     return True
 
 
@@ -213,11 +214,11 @@ class Task(AnimBase):
             self._duration -= self._interval
             if self._loops >= 0:
                 self._loops -= 1
-                if self._loops == 0:  # loops counter is zero, finish now
+                if self._loops == 0: # loops counter is zero, finish now
                     self.finish()
-                else:  # not finished, but still are iterations left
+                else:                # not finished, but still are iterations left
                     self._execute_callbacks("on interval")
-            else:  # loops == -1, run forever
+            else:                    # loops == -1, run forever
                 self._execute_callbacks("on interval")
 
     def finish(self):
@@ -310,12 +311,12 @@ class Animation(pygame.sprite.Sprite):
     if pygame rects are used as an animation target.
     """
     default_duration = 1000.
-    default_transition = 'out_quint'
+    default_transition = 'linear'
 
     def __init__(self, *targets, **kwargs):
         super(Animation, self).__init__()
         self.targets = list()
-        self._targets = list()  # used when there is a delay
+        self._targets = list()      #  used when there is a delay
         self.delay = kwargs.get('delay', 0)
         self._state = ANIMATION_NOT_STARTED
         self._round_values = kwargs.get('round_values', False)

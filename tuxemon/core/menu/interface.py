@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 import pygame
 
-import tuxemon.core.graphics
+from tuxemon.core import graphics
 from tuxemon.core import tools
 from tuxemon.core.ui.draw import GraphicBox
 
@@ -60,7 +60,7 @@ class HpBar(Bar):
         """ Image become class attribute, so is shared.
             Eventually, implement some game-wide image caching
         """
-        image = tuxemon.core.graphics.load_and_scale(self.border_filename)
+        image = graphics.load_and_scale(self.border_filename)
         HpBar.border = GraphicBox(image)
 
     def draw(self, surface, rect):
@@ -89,7 +89,7 @@ class ExpBar(Bar):
         """ Image become class attribute, so is shared.
             Eventually, implement some game-wide image caching
         """
-        image = tuxemon.core.graphics.load_and_scale(self.border_filename)
+        image = graphics.load_and_scale(self.border_filename)
         ExpBar.border = GraphicBox(image)
 
     def draw(self, surface, rect):

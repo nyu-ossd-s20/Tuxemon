@@ -37,7 +37,7 @@ import logging
 
 import pygame
 
-import tuxemon.core.graphics
+from tuxemon.core import graphics
 from tuxemon.core import tools
 from tuxemon.core import screen
 
@@ -61,7 +61,7 @@ class Controller(object):
 
     def load(self):
         from tuxemon.core import prepare
-        self.dpad["surface"] = tuxemon.core.graphics.load_and_scale("gfx/d-pad.png")
+        self.dpad["surface"] = graphics.load_and_scale("gfx/d-pad.png")
         self.dpad["position"] = (0, prepare.SCREEN_SIZE[1] - self.dpad["surface"].get_height() )
 
         # Create the collision rectangle objects for the dpad so we can see if we're pressing a button
@@ -85,7 +85,7 @@ class Controller(object):
 
         # Create the buttons
         self.a_button = {}
-        self.a_button["surface"] = tuxemon.core.graphics.load_and_scale("gfx/a-button.png")
+        self.a_button["surface"] = graphics.load_and_scale("gfx/a-button.png")
         self.a_button["position"] = (prepare.SCREEN_SIZE[0] - int( self.a_button["surface"].get_width() * 1.0 ),
             (self.dpad["position"][1] + (self.dpad["surface"].get_height() / 2) - (self.a_button["surface"].get_height() / 2)))
         self.a_button["rect"] = pygame.Rect(
@@ -94,7 +94,7 @@ class Controller(object):
             self.a_button["surface"].get_height())
 
         self.b_button = {}
-        self.b_button["surface"] = tuxemon.core.graphics.load_and_scale("gfx/b-button.png")
+        self.b_button["surface"] = graphics.load_and_scale("gfx/b-button.png")
         self.b_button["position"] = (prepare.SCREEN_SIZE[0] - int( self.b_button["surface"].get_width() * 2.1 ),
             (self.dpad["position"][1] + (self.dpad["surface"].get_height() / 2) - (self.b_button["surface"].get_height() / 2)))
         self.b_button["rect"] = pygame.Rect(

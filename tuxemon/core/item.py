@@ -39,7 +39,7 @@ import logging
 import pprint
 import random
 
-import tuxemon.core.graphics
+from tuxemon.core import graphics
 from tuxemon.core import db, tools
 from tuxemon.core.locale import T
 
@@ -139,7 +139,7 @@ class Item(object):
         self.usable_in = results["usable_in"]
         self.target = db.process_targets(results["target"])
         self.effect = results["effects"]
-        self.surface = tuxemon.core.graphics.load_and_scale(self.sprite)
+        self.surface = graphics.load_and_scale(self.sprite)
         self.surface_size_original = self.surface.get_size()
 
     def advance_round(self):
