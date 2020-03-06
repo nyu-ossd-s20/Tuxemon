@@ -42,6 +42,7 @@ from operator import itemgetter
 import pygame
 
 from tuxemon.core import prepare
+from tuxemon.core.graphics import capture_screenshot
 
 try:
     import cbor
@@ -72,13 +73,6 @@ def get_save_data(game):
     save_data['time'] = datetime.datetime.now().strftime(TIME_FORMAT)
     save_data['version'] = 1
     return save_data
-
-
-def capture_screenshot(game):
-    screenshot = pygame.Surface(game.screen.get_size())
-    world = game.get_state_name("WorldState")
-    world.draw(screenshot)
-    return screenshot
 
 
 def save(save_data, slot):
@@ -165,6 +159,7 @@ def upgrade_save(save_data):
                 key.partition("_")[2]: num
                 for key, num in data.items()
             }
+
         chest = save_data.get('storage', {})
         save_data['inventory'] = fix_items(save_data.get('inventory', {}))
         chest['items'] = fix_items(chest.get('items', {}))
@@ -188,4 +183,3 @@ def get_index_of_latest_save():
         return s[0]
     else:
         return None
-

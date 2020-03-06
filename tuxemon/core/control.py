@@ -31,8 +31,6 @@ from __future__ import unicode_literals
 import logging
 import time
 
-import pygame as pg
-
 from tuxemon.core import cli, networking
 from tuxemon.core.clock import Clock
 from tuxemon.core.platform import android
@@ -121,9 +119,9 @@ class Control(StateManager):
 
         States can "keep" events by simply returning None from State.process_event
 
-        :param events: Sequence of pg events
+        :param events: Sequence of events
         :returns: Iterator of game events
-        :rtype: collections.Iterable[pg.event.Event]
+        :rtype: collections.Iterable
 
         """
         for game_event in events:
@@ -143,7 +141,7 @@ class Control(StateManager):
         The final destination for the event will be the event engine.
 
         :returns: Game Event
-        :rtype: pg.event.Event
+        :rtype: event.Event
 
         """
         for state in self.active_states:
@@ -164,6 +162,8 @@ class Control(StateManager):
 
         :rtype: None
         """
+        import pygame as pg
+
         update = self.update
         screen = self.screen
         flip = pg.display.update
@@ -283,7 +283,8 @@ class Control(StateManager):
             fps_timer += clock_tick
             if fps_timer >= 1:
                 with_fps = "{} - {:.2f} FPS".format(self.config.caption, frames / fps_timer)
-                pg.display.set_caption(with_fps)
+                # TODO: abstract the game window away from pygame
+                # pg.display.set_caption(with_fps)
                 return 0, 0
             return fps_timer, frames
         return 0, 0

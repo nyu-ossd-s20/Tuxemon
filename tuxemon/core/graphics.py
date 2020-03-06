@@ -9,7 +9,6 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import operator
 import re
 
 import pygame
@@ -66,24 +65,6 @@ def load_and_scale(filename):
     :rtype: pygame.Surface
     """
     return scale_surface(load_image(filename), prepare.SCALE)
-
-
-# def smart_convert(image):
-#     """ Given an unconverted file, determine if it has transparent pixels
-#     and return a converted image, with per-pixel alpha if needed.
-#
-#     :param image: pygame.Surface
-#     :rtype: pygame.Surface
-#     """
-#     # get number of opaque pixels in the image
-#     px = pygame.mask.from_surface(image, 127).count()
-#
-#     # there are no transparent pixels in the image because
-#     # the number of pixels matches the number of opaque pixels
-#     if px == operator.mul(*image.get_size()):
-#         return image.convert()
-#
-#     return image.convert_alpha()
 
 
 def load_image(filename):
@@ -272,3 +253,10 @@ def scaled_image_loader(filename, colorkey, **kwargs):
         return tile
 
     return load_image
+
+
+def capture_screenshot(game):
+    screenshot = pygame.Surface(game.screen.get_size())
+    world = game.get_state_name("WorldState")
+    world.draw(screenshot)
+    return screenshot
