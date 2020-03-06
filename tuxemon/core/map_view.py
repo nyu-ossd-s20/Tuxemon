@@ -18,7 +18,7 @@ from pytmx.util_pygame import load_pygame
 
 from tuxemon.compat import Rect
 from tuxemon.core import prepare, pyganim
-from graphics.import scaled_image_loader, load_and_scale
+from tuxemon.core.graphics import scaled_image_loader, load_and_scale
 from tuxemon.core.map import facing
 from tuxemon.core.prepare import CONFIG
 from tuxemon.core.tools import nearest

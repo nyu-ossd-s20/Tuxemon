@@ -21,7 +21,7 @@ from tuxemon.core.menu.menu import Menu
 from tuxemon.core.pyganim import PygAnimation
 from tuxemon.core.sprite import Sprite
 from tuxemon.core.tools import scale, scale_sequence
-from graphics.import scale_sprite
+from tuxemon.core.graphics import scale_sprite
 
 logger = logging.getLogger(__name__)
 
