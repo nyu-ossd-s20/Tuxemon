@@ -4,11 +4,11 @@ import mock
 import pygame as pg
 
 from tuxemon.core import prepare
-from tuxemon.core.states.world import MapEnvironment
+from tuxemon.core.states.world import WorldState
 
 pg.display.set_mode((1, 1), 0, 0)
 control = mock.MagicMock()
-state = MapEnvironment(control)
+state = WorldState(control)
 map_name = join(prepare.BASEDIR, prepare.DATADIR, 'maps', 'test_cotton_town.tmx')
 state.change_map(map_name)
 

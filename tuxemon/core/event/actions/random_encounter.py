@@ -27,13 +27,11 @@ from __future__ import unicode_literals
 import logging
 import random
 
-from tuxemon.core import tools
 from tuxemon.core import ai, monster, prepare
-from tuxemon.core.db import db
 from tuxemon.core.combat import check_battle_legal
+from tuxemon.core.db import db
 from tuxemon.core.event.eventaction import EventAction
 from tuxemon.core.npc import NPC
-from tuxemon.core.platform import mixer
 
 logger = logging.getLogger(__name__)
 

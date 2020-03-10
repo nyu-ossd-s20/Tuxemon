@@ -35,8 +35,8 @@ import pygame
 from pygame.transform import rotozoom
 from pygame.transform import scale
 
-from tuxemon.core.pyganim import PygAnimation
 from tuxemon.core.platform.const import buttons
+from tuxemon.core.pyganim import PygAnimation
 
 
 class Sprite(pygame.sprite.DirtySprite):

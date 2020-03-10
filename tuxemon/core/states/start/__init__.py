@@ -36,10 +36,8 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import logging
-import os.path
 from functools import partial
 
-from tuxemon.core import prepare
 from tuxemon.core.locale import T
 from tuxemon.core.menu.interface import MenuItem
 from tuxemon.core.menu.menu import PopUpMenu

@@ -10,12 +10,11 @@ import pygame
 
 from tuxemon.core import graphics
 from tuxemon.core import prepare, state, tools
-from tuxemon.core.db import db
 from tuxemon.core.menu.interface import MenuCursor, MenuItem
+from tuxemon.core.platform.const import buttons, intentions
 from tuxemon.core.sprite import RelativeGroup, VisualSpriteList
 from tuxemon.core.ui.draw import GraphicBox
 from tuxemon.core.ui.text import TextArea
-from tuxemon.core.platform.const import buttons, intentions
 
 logger = logging.getLogger(__name__)
 

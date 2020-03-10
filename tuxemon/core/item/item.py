@@ -38,14 +38,12 @@ from __future__ import unicode_literals
 import logging
 import pprint
 
-from tuxemon.core import graphics
-from tuxemon.core import db, tools
+from tuxemon.constants import paths
+from tuxemon.core import db
+from tuxemon.core import plugin
 from tuxemon.core import tools, prepare
 from tuxemon.core.db import db, process_targets
 from tuxemon.core.locale import T
-
-from tuxemon.core import plugin
-from tuxemon.constants import paths
 
 logger = logging.getLogger(__name__)
 

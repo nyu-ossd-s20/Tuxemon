@@ -1,5 +1,5 @@
 """
-from map_loader.py
+from map.py
 """
 
 # If the module is being run as a standalone program, run an example

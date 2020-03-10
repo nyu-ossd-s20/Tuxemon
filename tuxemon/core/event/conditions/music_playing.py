@@ -25,7 +25,6 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from tuxemon.core.event.eventcondition import EventCondition
-from tuxemon.core.platform import mixer
 
 
 class MusicPlayingCondition(EventCondition):

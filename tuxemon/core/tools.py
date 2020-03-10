@@ -34,14 +34,14 @@ from __future__ import unicode_literals
 import logging
 import os.path
 import re
-from six.moves import zip_longest
 from itertools import product
 
-from tuxemon.compat import Rect
 import pygame
+from six.moves import zip_longest
 
 import tuxemon.core.monster
 import tuxemon.core.sprite
+from tuxemon.compat import Rect
 from tuxemon.core import prepare
 from tuxemon.core import pyganim
 from tuxemon.core.db import db

@@ -15,14 +15,13 @@ import pygame
 
 from tuxemon.core import graphics
 from tuxemon.core import tools
-from tuxemon.core.db import db
+from tuxemon.core.graphics import scale_sprite
 from tuxemon.core.locale import T
 from tuxemon.core.menu.interface import HpBar, ExpBar
 from tuxemon.core.menu.menu import Menu
 from tuxemon.core.pyganim import PygAnimation
 from tuxemon.core.sprite import Sprite
 from tuxemon.core.tools import scale, scale_sequence
-from tuxemon.core.graphics import scale_sprite
 
 logger = logging.getLogger(__name__)
 

@@ -42,8 +42,8 @@ from operator import itemgetter
 import pygame
 
 from tuxemon.core import prepare
-from tuxemon.core.save_upgrader import SAVE_VERSION, upgrade_save
 from tuxemon.core.graphics import capture_screenshot
+from tuxemon.core.save_upgrader import SAVE_VERSION, upgrade_save
 
 try:
     import cbor

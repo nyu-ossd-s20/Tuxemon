@@ -35,7 +35,6 @@ from __future__ import unicode_literals
 import logging
 
 from tuxemon.core import graphics
-from tuxemon.core import tools
 from tuxemon.core import pyganim
 
 logger = logging.getLogger(__name__)

@@ -26,8 +26,8 @@ from __future__ import unicode_literals
 
 import logging
 
-from tuxemon.core.db import db
 from tuxemon.core.combat import check_battle_legal
+from tuxemon.core.db import db
 from tuxemon.core.event.eventaction import EventAction
 
 logger = logging.getLogger(__name__)

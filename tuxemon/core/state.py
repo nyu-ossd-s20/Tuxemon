@@ -37,9 +37,10 @@ from abc import ABCMeta
 from importlib import import_module
 
 import pygame
-from tuxemon.core import graphics
+
 from tuxemon.compat import Rect
 from tuxemon.constants import paths
+from tuxemon.core import graphics
 from tuxemon.core import prepare
 from tuxemon.core.animation import Animation
 from tuxemon.core.animation import Task

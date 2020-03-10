@@ -37,10 +37,8 @@ import logging
 from math import hypot
 
 from tuxemon.compat import Rect
-from tuxemon.core import db, monster
-import pygame
-
-from tuxemon.core import monster, pyganim
+from tuxemon.core import db
+from tuxemon.core import monster
 from tuxemon.core.db import db
 from tuxemon.core.entity import Entity
 from tuxemon.core.item.item import Item
