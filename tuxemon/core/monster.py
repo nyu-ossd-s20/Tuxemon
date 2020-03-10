@@ -37,16 +37,12 @@ import random
 
 from tuxemon.core import graphics
 from tuxemon.core import tools
-from tuxemon.core import ai, db, fusion
+from tuxemon.core import ai, fusion
 from tuxemon.core.locale import T
+from tuxemon.core.db import db
 from tuxemon.core.technique import Technique
 
 logger = logging.getLogger(__name__)
-
-# Load the monster database
-monsters = db.JSONDatabase()
-monsters.load("monster")
-monsters.load("technique")
 
 SIMPLE_PERSISTANCE_ATTRIBUTES = (
     'current_hp',
@@ -55,6 +51,7 @@ SIMPLE_PERSISTANCE_ATTRIBUTES = (
     'slug',
     'status',
     'total_experience',
+    'flairs'
 )
 
 SHAPES = {
@@ -172,6 +169,16 @@ SHAPES = {
     },
 }
 
+MAX_LEVEL = 999
+MISSING_IMAGE = "gfx/sprites/battle/missing.png"
+
+
+# class definition for tuxemon flairs:
+class Flair(object):
+   def __init__(self, category, name):
+      self.category = category
+      self.name = name
+
 
 # class definition for first active tuxemon to use in combat:
 class Monster(object):
@@ -207,6 +214,9 @@ class Monster(object):
         self.moves = []         # A list of technique objects. Used in combat.
         self.moveset = []       # A list of possible technique objects.
         self.evolutions = []    # A list of possible evolution objects.
+        self.flairs = {}        # A dictionary of flairs, one is picked randomly.
+        self.battle_cry = ""    # a slug for a sound file, used primarly when they enter battle
+        self.faint_cry = ""     # a slug for a sound file, used when the monster faints
         self.ai = None
 
         # The multiplier for experience
@@ -239,10 +249,12 @@ class Monster(object):
         self.sprites = {}
         self.front_battle_sprite = ""
         self.back_battle_sprite = ""
-        self.menu_sprite = ""
+        self.menu_sprite_1 = ""
+        self.menu_sprite_2 = ""
 
         self.set_state(save_data)
         self.set_stats()
+        self.set_flairs()
 
     def load_from_db(self, slug):
         """Loads and sets this monster's attributes from the monster.db database.
@@ -255,7 +267,7 @@ class Monster(object):
         """
 
         # Look up the monster by name and set the attributes in this instance
-        results = monsters.lookup(slug)
+        results = db.lookup(slug, table="monster")
 
         if results is None:
             logger.error("monster {} is not found".format(slug))
@@ -292,7 +304,12 @@ class Monster(object):
         # Look up the monster's sprite image paths
         self.front_battle_sprite = self.get_sprite_path(results['sprites']['battle1'])
         self.back_battle_sprite = self.get_sprite_path(results['sprites']['battle2'])
-        self.menu_sprite = self.get_sprite_path(results['sprites']['menu1'])
+        self.menu_sprite_1 = self.get_sprite_path(results['sprites']['menu1'])
+        self.menu_sprite_2 = self.get_sprite_path(results['sprites']['menu2'])
+
+        # get sound slugs for this monster, defaulting to a generic type-based sound
+        self.combat_call = results.get("sounds", {}).get("combat_call", "sound_{}_call".format(self.type1))
+        self.faint_call = results.get("sounds", {}).get("faint_call", "sound_{}_faint".format(self.type1))
 
         # Load the monster AI
         # TODO: clean up AI 'core' loading and what not
@@ -383,6 +400,7 @@ class Monster(object):
         logger.info("Leveling %s from %i to %i!" % (self.name, self.level, self.level + 1))
         # Increase Level and stats
         self.level += 1
+        self.level = min(self.level, MAX_LEVEL)
         self.set_stats()
 
         # Learn New Moves
@@ -433,6 +451,49 @@ class Monster(object):
                     return evolution['monster_slug']
         return None
 
+    def get_sprite(self, sprite, **kwargs):
+        """Gets a specific type of sprite for the monster.
+
+        :rtype: Pygame surface
+        :returns: The surface of the monster sprite
+        """
+        if sprite == "front":
+            surface = tools.load_sprite(self.front_battle_sprite, **kwargs)
+        elif sprite == "back":
+            surface = tools.load_sprite(self.back_battle_sprite, **kwargs)
+        elif sprite == "menu":
+            surface = tools.load_animated_sprite([
+                self.menu_sprite_1,
+                self.menu_sprite_2],
+                0.25, **kwargs)
+        else:
+            raise ValueError("Cannot find sprite for: {}".format(sprite))
+
+        # Apply flairs to the monster sprite
+        for flair in self.flairs.values():
+            flair_path = self.get_sprite_path("gfx/sprites/battle/{}-{}-{}".format(self.slug, sprite, flair.name))
+            if flair_path != MISSING_IMAGE:
+                flair_sprite = tools.load_sprite(flair_path, **kwargs)
+                surface.image.blit(flair_sprite.image, (0, 0))
+
+        return surface
+
+    def set_flairs(self):
+        """Sets the flairs of this monster if they were not already configured
+
+        :rtype: None
+        :returns: None
+        """
+        if len(self.flairs) > 0 or self.slug == "":
+            return
+
+        results = db.lookup(self.slug, table="monster")
+        flairs = results.get("flairs")
+        if flairs:
+            for flair in flairs:
+                flair = Flair(flair['category'], random.choice(flair['names']))
+                self.flairs[flair.category] = flair
+
     def get_sprite_path(self, sprite):
         '''
         Paths are set up by convention, so the file extension is unknown.
@@ -442,13 +503,16 @@ class Monster(object):
         rtype: String
         returns: path to sprite or placeholder image
         '''
-        exts = ["png", "gif", "jpg", "jpeg"]
-        for ext in exts:
-            path = "%s.png" % sprite
-            full_path = tools.transform_resource_filename(path)
-            if full_path:
-                return full_path
-        return "gfx/sprites/battle/missing.png"
+        try:
+            exts = ["png", "gif", "jpg", "jpeg"]
+            for ext in exts:
+                path = "%s.png" % sprite
+                full_path = tools.transform_resource_filename(path)
+                if full_path:
+                    return full_path
+        except IOError:
+            logger.debug("Could not find monster sprite {}".format(sprite))
+            return MISSING_IMAGE
 
     def load_sprites(self):
         """Loads the monster's sprite images as Pygame surfaces.
@@ -467,7 +531,7 @@ class Monster(object):
 
         self.sprites["front"] = graphics.load_and_scale(self.front_battle_sprite)
         self.sprites["back"] = graphics.load_and_scale(self.back_battle_sprite)
-        self.sprites["menu"] = graphics.load_and_scale(self.menu_sprite)
+        self.sprites["menu"] = graphics.load_and_scale(self.menu_sprite_1)
         return False
 
     def get_state(self):
@@ -489,6 +553,8 @@ class Monster(object):
         body = self.body.get_state()
         if body:
             save_data["body"] = body
+
+        save_data["moves"] = [tech.slug for tech in self.moves]
 
         return save_data
 
@@ -512,6 +578,8 @@ class Monster(object):
                 self.status = [Technique(slug=i) for i in value]
             elif key == 'body' and value:
                 self.body.set_state(value)
+            elif key == 'moves' and value:
+                self.moves = [Technique(slug) for slug in value]
             elif key in SIMPLE_PERSISTANCE_ATTRIBUTES:
                 setattr(self, key, value)
 

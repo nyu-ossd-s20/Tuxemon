@@ -25,7 +25,9 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from tuxemon.core.event.eventaction import EventAction
+import logging
 
+logger = logging.getLogger(__name__)
 
 class WaitForInputAction(EventAction):
     """Pauses the event engine until specified button is pressed
@@ -51,6 +53,7 @@ class WaitForInputAction(EventAction):
     ]
 
     def start(self):
+        logger.warning("the wait_for_input action has been deprecated, please remove it from your scripts")
         self.session.control.event_engine.button = self.parameters.button
         self.session.control.event_engine.state = "waiting for input"
         self.session.control.event_engine.wait = 2

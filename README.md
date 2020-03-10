@@ -1,5 +1,5 @@
-Tuxemon 0.4.7
-=============
+Tuxemon 0.4.14
+==============
 
 Tuxemon is a free, open source monster-fighting RPG.
 
@@ -24,16 +24,37 @@ Tuxemon uses a number of open source projects to work properly:
 Installation
 ------------
 
-**Windows**
+**Windows Source**
 
-[Detailed here](https://www.tuxemon.org/windows-install.html)
+Install the latest version of python 3 from [here](https://www.python.org/downloads/)
 
-Windows binaries are also available in the releases.
+Run:
+
+```cmd
+git clone https://github.com/Tuxemon/Tuxemon.git
+cd Tuxemon
+python -m pip install -U -r requirements.txt
+python tuxemon.py
+```
+
+**Windows Binary**
+
+Check the release page https://github.com/Tuxemon/Tuxemon/releases for binaries.
 
 **Ubuntu**
 
 ```sh
 sudo apt install python python-pygame python-pip python-imaging python-six git
+git clone https://github.com/Tuxemon/Tuxemon.git
+cd Tuxemon
+sudo pip install -U -r requirements.txt
+python tuxemon.py
+```
+
+**Debian**
+
+```sh
+sudo apt-get install python python-pygame python-pip python-imaging git
 git clone https://github.com/Tuxemon/Tuxemon.git
 cd Tuxemon
 sudo pip install -U -r requirements.txt
@@ -47,16 +68,6 @@ sudo apt install build-essential
 git clone https://github.com/zear/libShake.git
 cd libShake/
 make BACKEND=LINUX; sudo make install BACKEND=LINUX
-```
-
-**Debian**
-
-```sh
-sudo apt-get install python python-pygame python-pip python-imaging git
-git clone https://github.com/Tuxemon/Tuxemon.git
-cd Tuxemon
-sudo pip install -U -r requirements.txt
-python tuxemon.py
 ```
 
 **Mac OS X (Yosemite)**
@@ -80,6 +91,7 @@ Tuxemon is available in the [AUR](https://aur.archlinux.org/packages/tuxemon-git
 
 **Smartphones**
 * [Android](https://www.tuxemon.org/files/builds/tuxemon-unstable-latest.apk) (APK file)
+
 
 Controls
 --------

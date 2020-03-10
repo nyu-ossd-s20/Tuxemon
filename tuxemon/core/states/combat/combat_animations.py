@@ -15,6 +15,7 @@ import pygame
 
 from tuxemon.core import graphics
 from tuxemon.core import tools
+from tuxemon.core.db import db
 from tuxemon.core.locale import T
 from tuxemon.core.menu.interface import HpBar, ExpBar
 from tuxemon.core.menu.menu import Menu
@@ -148,10 +149,9 @@ class CombatAnimations(Menu):
         self.task(capdev.kill, fall_time + delay + fade_duration)
 
         # load monster and set in final position
-        monster_sprite = self.load_sprite(
-            monster.back_battle_sprite if npc.isplayer else monster.front_battle_sprite,
-            midbottom=feet,
-        )
+        monster_sprite = monster.get_sprite("back" if npc.isplayer else "front",
+                                            midbottom=feet)
+        self.sprites.add(monster_sprite)
         self._monster_sprite_map[monster] = monster_sprite
 
         # position monster_sprite off screen and set animation to move it back to final spot
@@ -174,6 +174,11 @@ class CombatAnimations(Menu):
         sprite.rect.midbottom = feet
         self.task(tech.play, delay)
         self.task(partial(self.sprites.add, sprite), delay)
+
+        # attempt to load and queue up combat_call
+        call_sound = tools.load_sound(monster.combat_call)
+        if call_sound:
+            self.task(call_sound.play, delay)
 
         # update tuxemon balls to reflect fainted tuxemon
         for player, layout in self._layout.items():
@@ -221,7 +226,6 @@ class CombatAnimations(Menu):
                 monsters.remove(monster)
             except ValueError:
                 pass
-
 
     def animate_sprite_take_damage(self, sprite):
         """
@@ -306,6 +310,9 @@ class CombatAnimations(Menu):
         else:
             x_diff = scale(150)
 
+        cry = monster.combat_call if monster.current_hp > 0 else monster.faint_call
+        sound = tools.load_sound(cry)
+        sound.play()
         self.animate(sprite.rect, x=x_diff, relative=True, duration=2)
 
     def build_hud(self, home, monster):
@@ -396,7 +403,6 @@ class CombatAnimations(Menu):
             animate(sprite.image, set_alpha=255, initial=0)
             animate(sprite.rect, bottom=tray.rect.top + scale(3))
 
-
     def animate_update_party_hud(self, player, home):
         """ Party HUD is the arrow thing with balls.  Yes, that one.
 
@@ -470,9 +476,10 @@ class CombatAnimations(Menu):
         back_island = self.load_sprite('gfx/ui/combat/' + self.graphics['island_back'],
                                        bottom=opp_home.bottom + y_mod, right=0)
 
-        monster1 = self.load_sprite(right_monster.front_battle_sprite,
-                                    bottom=back_island.rect.bottom - scale(12),
-                                    centerx=back_island.rect.centerx)
+        monster1 = right_monster.get_sprite("front",
+                                            bottom=back_island.rect.bottom - scale(12),
+                                            centerx=back_island.rect.centerx)
+        self.sprites.add(monster1)
         self.build_hud(self._layout[opponent]['hud'][0], right_monster)
         self.monsters_in_play[opponent].append(right_monster)
         self._monster_sprite_map[right_monster] = monster1
@@ -496,6 +503,7 @@ class CombatAnimations(Menu):
 
         flip()                       # flip images to opposite
         self.task(flip, 1.5)         # flip the images to proper direction
+        self.task(tools.load_sound(right_monster.combat_call).play, 1.5) # play combat call when it turns back
 
         animate = partial(self.animate, transition='out_quad', duration=duration)
 
@@ -564,6 +572,8 @@ class CombatAnimations(Menu):
         if is_captured:
             self.task(kill, 2 + num_shakes)
         else:
-            self.task(partial(toggle_visible, monster_sprite), 1.8 + num_shakes * 1.0) # make the monster appear again!
-            self.task(tech.play, 1.8 + num_shakes * 1.0)
-            self.task(capdev.kill, 1.8 + num_shakes * 1.0)
+            breakout_delay = 1.8 + num_shakes * 1.0
+            self.task(partial(toggle_visible, monster_sprite), breakout_delay) # make the monster appear again!
+            self.task(tools.load_sound(monster.combat_call).play, breakout_delay)
+            self.task(tech.play, breakout_delay)
+            self.task(capdev.kill, breakout_delay)
