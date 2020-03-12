@@ -83,7 +83,7 @@ class MainCombatMenuState(PopUpMenu):
             combat_state = self.game.get_state_name("CombatState")
             swap = Technique("swap")
             swap.combat_state = combat_state
-            player = self.game.player1
+            player = self.session.player
             target = monster
             combat_state.enqueue_action(player, swap, target)
             self.game.pop_state()  # close technique menu

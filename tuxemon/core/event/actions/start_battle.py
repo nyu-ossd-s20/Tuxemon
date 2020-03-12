@@ -58,7 +58,7 @@ class StartBattleAction(EventAction):
     ]
 
     def start(self):
-        player = self.game.player1
+        player = self.session.player
 
         # Don't start a battle if we don't even have monsters in our party yet.
         if not check_battle_legal(player):

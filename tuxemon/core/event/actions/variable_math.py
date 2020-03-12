@@ -45,7 +45,7 @@ class VariableMathAction(EventAction):
 
     def start(self):
         # Get the player object from the self.game.
-        player = self.game.player1
+        player = self.session.player
 
         # Read the parameters
         var = self.parameters.var

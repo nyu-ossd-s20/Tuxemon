@@ -46,7 +46,7 @@ class PlayerFaceAction(EventAction):
         direction = self.parameters.direction
         if direction not in dirs2:
             target = get_npc(self.game, direction)
-            direction = get_direction(self.game.player1.tilepos, target.tilepos)
+            direction = get_direction(self.session.player.tilepos, target.tilepos)
 
         # If we're doing a transition, only change the player's facing when we've reached the apex
         # of the transition.
@@ -54,4 +54,4 @@ class PlayerFaceAction(EventAction):
         if world_state.in_transition:
             world_state.delayed_facing = direction
         else:
-            self.game.player1.facing = direction
+            self.session.player.facing = direction

@@ -51,7 +51,7 @@ class MonsterMenuState(Menu):
             self.monster_slot_border[border_type] = window
 
         # TODO: something better than this global, load_sprites stuff
-        for monster in self.game.player1.monsters:
+        for monster in self.session.player.monsters:
             monster.load_sprites()
 
     def animate_monster_down(self):
@@ -74,7 +74,7 @@ class MonsterMenuState(Menu):
     def initialize_items(self):
         # position the monster portrait
         try:
-            monster = self.game.player1.monsters[self.selected_index]
+            monster = self.session.player.monsters[self.selected_index]
             image = monster.sprites["front"]
         except IndexError:
             image = pygame.Surface((1, 1), pygame.SRCALPHA)
@@ -87,10 +87,10 @@ class MonsterMenuState(Menu):
         self.animate_monster_down()
 
         width = prepare.SCREEN_SIZE[0] // 2
-        height = prepare.SCREEN_SIZE[1] // (self.game.player1.party_limit * 1.5)
+        height = prepare.SCREEN_SIZE[1] // (self.session.player.party_limit * 1.5)
 
         # make 6 slots
-        for i in range(self.game.player1.party_limit):
+        for i in range(self.session.player.party_limit):
             rect = Rect(0, 0, width, height)
             surface = pygame.Surface(rect.size, pygame.SRCALPHA)
             item = MenuItem(surface, None, None, None)
@@ -121,7 +121,7 @@ class MonsterMenuState(Menu):
         """
         for index, item in enumerate(self.menu_items):
             try:
-                monster = self.game.player1.monsters[index]
+                monster = self.session.player.monsters[index]
             except IndexError:
                 monster = None
                 continue
@@ -173,7 +173,7 @@ class MonsterMenuState(Menu):
 
     def on_menu_selection_change(self):
         try:
-            monster = self.game.player1.monsters[self.selected_index]
+            monster = self.session.player.monsters[self.selected_index]
             image = monster.sprites["front"]
         except IndexError:
             image = pygame.Surface((1, 1), pygame.SRCALPHA)

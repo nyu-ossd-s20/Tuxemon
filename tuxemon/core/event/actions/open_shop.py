@@ -41,7 +41,7 @@ class OpenShopAction(EventAction):
             self.game.pop_state()
             self.game.push_state(
                 "ShopMenuState",
-                buyer=self.game.player1,
+                buyer=self.session.player,
                 seller=npc,
             )
 
@@ -50,7 +50,7 @@ class OpenShopAction(EventAction):
             self.game.push_state(
                 "ShopMenuState",
                 buyer=None,
-                seller=self.game.player1,
+                seller=self.session.player,
             )
 
         var_menu = [

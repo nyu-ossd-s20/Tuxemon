@@ -774,7 +774,7 @@ class CombatState(CombatAnimations):
                     # If a monster fainted, exp was given, thus the exp bar should be updated
                     # The exp bar must only be animated for the player's monsters
                     # Enemies don't have a bar, doing it for them will cause a crash
-                    for monster in self.monsters_in_play[self.game.player1]:
+                    for monster in self.monsters_in_play[self.session.player]:
                         self.animate_exp(monster)
 
     def get_technique_animation(self, technique):

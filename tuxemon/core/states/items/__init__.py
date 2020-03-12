@@ -74,7 +74,7 @@ class ItemMenuState(Menu):
         item = menu_item.game_object
         state = self.determine_state_called_from()
 
-        if not any(menu_item.game_object.validate(m) for m in self.game.player1.monsters):
+        if not any(menu_item.game_object.validate(m) for m in self.session.player.monsters):
             msg = T.format('item_no_available_target', {'name': item.name})
             tools.open_dialog(self.game, [msg])
         elif state not in item.usable_in:
@@ -90,7 +90,7 @@ class ItemMenuState(Menu):
         """
 
         def use_item(menu_item):
-            player = self.game.player1
+            player = self.session.player
             monster = menu_item.game_object
 
             # item must be used before state is popped.
@@ -160,7 +160,7 @@ class ItemMenuState(Menu):
 
         :return:
         """
-        inventory = self.game.player1.inventory.values()
+        inventory = self.session.player.inventory.values()
 
         # required because the max() below will fail if inv empty
         if not inventory:

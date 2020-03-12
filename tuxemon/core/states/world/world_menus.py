@@ -85,7 +85,7 @@ class WorldMenuState(Menu):
                 # at this point, the cursor will have changed
                 # so we need to re-arrange the list before it is rendered again
                 # TODO: API for getting the game player object
-                player = self.game.player1
+                player = self.session.player
                 monster_list = player.monsters
 
                 # get the newly selected item.  it will be set to previous position
@@ -109,7 +109,7 @@ class WorldMenuState(Menu):
 
         def select_first_monster():
             # TODO: API for getting the game player obj
-            player = self.game.player1
+            player = self.session.player
             monster = monster_menu.get_selected_item().game_object
             context['monster'] = monster
             context['old_index'] = player.monsters.index(monster)

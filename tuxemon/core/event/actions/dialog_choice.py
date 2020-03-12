@@ -50,7 +50,7 @@ class DialogChoiceAction(EventAction):
             self.game.pop_state()
 
         # Get the player object from the self.game.
-        player = self.game.player1
+        player = self.session.player
 
         # perform text substitutions
         choices = replace_text(self.game, self.parameters.choices)

@@ -932,7 +932,7 @@ class WorldState(state.State):
         # Clear out any existing NPCs
         self.npcs = {}
         self.npcs_off_map = {}
-        self.add_player(self.game.player1)
+        self.add_player(self.session.player)
 
         # reset controls and stop moving to prevent player from
         # moving after the teleport and being out of control

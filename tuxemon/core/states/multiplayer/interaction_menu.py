@@ -46,7 +46,7 @@ class ConfirmMenu(PopUpMenu):
 
         # TODO: combat checks?
 
-        player = self.game.player1
+        player = self.session.player
         item.use(player, self.game)
 
     def initialize_items(self):
