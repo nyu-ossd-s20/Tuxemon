@@ -86,7 +86,7 @@ class WorldState(state.State):
 
         self.npcs = {}
         self.npcs_off_map = {}
-        self.player1 = None
+        self.player = None
         self.wants_to_move_player = None
         self.allow_player_movement = True
 
@@ -232,10 +232,10 @@ class WorldState(state.State):
             if map_name != self.current_map.filename:
                 self.change_map(map_name)
 
-            self.player1.set_position((self.delayed_x, self.delayed_y))
+            self.player.set_position((self.delayed_x, self.delayed_y))
 
             if self.delayed_facing:
-                self.player1.facing = self.delayed_facing
+                self.player.facing = self.delayed_facing
                 self.delayed_facing = None
 
             self.delayed_teleport = False
@@ -255,7 +255,7 @@ class WorldState(state.State):
         # Update the server/clients of our new map and populate any other players.
         if self.control.isclient or self.control.ishost:
             self.control.add_clients_to_map(self.control.client.client.registry)
-            self.control.client.update_player(self.player1.facing)
+            self.control.client.update_player(self.player.facing)
 
         # Update the location of the npcs. Doesn't send network data.
         for npc in self.npcs.values():
@@ -280,7 +280,7 @@ class WorldState(state.State):
         super(WorldState, self).update(time_delta)
         self.move_npcs(time_delta)
         logger.debug("*** Game Loop Started ***")
-        logger.debug("Player Variables:" + str(self.player1.game_variables))
+        logger.debug("Player Variables:" + str(self.player.game_variables))
 
     def draw(self, surface):
         """ Draw the game world to the screen
@@ -335,7 +335,7 @@ class WorldState(state.State):
                 return
 
         # map may not have a player registered
-        if self.player1 is None:
+        if self.player is None:
             return
 
         if event.button == intentions.INTERACT:
@@ -347,9 +347,9 @@ class WorldState(state.State):
 
         if event.button == intentions.RUN:
             if event.held:
-                self.player1.moverate = self.control.config.player_runrate
+                self.player.moverate = self.control.config.player_runrate
             else:
-                self.player1.moverate = self.control.config.player_walkrate
+                self.player.moverate = self.control.config.player_walkrate
 
         # If we receive an arrow key press, set the facing and
         # moving direction to that direction
@@ -367,7 +367,7 @@ class WorldState(state.State):
 
         if prepare.DEV_TOOLS:
             if event.pressed and event.button == intentions.NOCLIP:
-                self.player1.ignore_collisions = not self.player1.ignore_collisions
+                self.player.ignore_collisions = not self.player.ignore_collisions
                 return
 
         # if we made it this far, return the event for others to use
@@ -391,7 +391,7 @@ class WorldState(state.State):
         world_surfaces = list()
 
         # get player coords to center map
-        cx, cy = nearest(self.project(self.player1.tile_pos))
+        cx, cy = nearest(self.project(self.player.tile_pos))
 
         # offset center point for player sprite
         cx += prepare.TILE_SIZE[0] // 2
@@ -452,7 +452,7 @@ class WorldState(state.State):
         :param player:
         :return:
         """
-        self.player1 = player
+        self.player = player
         self.add_entity(player)
 
     def add_entity(self, entity):
@@ -707,7 +707,7 @@ class WorldState(state.State):
         """
         self.wants_to_move_player = None
         self.control.release_controls()
-        self.player1.cancel_movement()
+        self.player.cancel_movement()
 
     def stop_and_reset_player(self):
         """ Reset controls, stop player and abort movement.  Do not lock controls.
@@ -721,7 +721,7 @@ class WorldState(state.State):
         """
         self.wants_to_move_player = None
         self.control.release_controls()
-        self.player1.abort_movement()
+        self.player.abort_movement()
 
     def move_player(self, direction):
         """ Move player in a direction.  Changes facing.
@@ -729,7 +729,7 @@ class WorldState(state.State):
         :param direction:
         :return:
         """
-        self.player1.move_direction = direction
+        self.player.move_direction = direction
 
     def get_pos_from_tilepos(self, tile_position):
         """ Returns the map pixel coordinate based on tile position.
@@ -941,7 +941,7 @@ class WorldState(state.State):
         # move to spawn position, if any
         for eo in self.control.events:
             if eo.name.lower() == "player spawn":
-                self.player1.set_position((eo.x, eo.y))
+                self.player.set_position((eo.x, eo.y))
 
     def load_map(self, map_name):
         """ Returns map data as a dictionary to be used for map changing and preloading
@@ -981,14 +981,14 @@ class WorldState(state.State):
         :returns: True if there is an Npc to interact with.
 
         """
-        collision_dict = self.player1.get_collision_map(self)
-        player_tile_pos = nearest(self.player1.tile_pos)
-        collisions = self.player1.collision_check(player_tile_pos, collision_dict, self.collision_lines_map)
+        collision_dict = self.player.get_collision_map(self)
+        player_tile_pos = nearest(self.player.tile_pos)
+        collisions = self.player.collision_check(player_tile_pos, collision_dict, self.collision_lines_map)
         if not collisions:
             pass
         else:
             for direction in collisions:
-                if self.player1.facing == direction:
+                if self.player.facing == direction:
                     if direction == "up":
                         tile = (player_tile_pos[0], player_tile_pos[1] - 1)
                     elif direction == "down":
@@ -1032,7 +1032,7 @@ class WorldState(state.State):
                 if self.wants_duel:
                     if event_data["response"] == "Accept":
                         world = self.control.current_state
-                        pd = world.player1.__dict__
+                        pd = world.player.__dict__
                         event_data = {"type": "CLIENT_INTERACTION",
                                       "interaction": "START_DUEL",
                                       "target": [event_data["target"]],

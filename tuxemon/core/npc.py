@@ -305,7 +305,8 @@ class NPC(Entity):
 
         :return: None
         """
-        self.network_notify_stop_moving()
+        #
+        # self.network_notify_stop_moving()
         self.velocity3.x = 0
         self.velocity3.y = 0
         self.velocity3.z = 0

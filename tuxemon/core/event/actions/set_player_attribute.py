@@ -48,4 +48,4 @@ class SetPlayerAttributeAction(EventAction):
         attribute = self.parameters[0]
         value = self.parameters[1]
 
-        Common.set_character_attribute(world.player1, attribute, value)
+        Common.set_character_attribute(world.player, attribute, value)

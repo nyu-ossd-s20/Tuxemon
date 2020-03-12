@@ -50,4 +50,4 @@ class ModifyPlayerAttributeAction(EventAction):
         attribute = self.parameters[0]
         modifier = self.parameters[1]
 
-        Common.modify_character_attribute(world.player1, attribute, modifier)
+        Common.modify_character_attribute(world.player, attribute, modifier)

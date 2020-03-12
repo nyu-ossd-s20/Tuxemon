@@ -122,7 +122,7 @@ class Control(StateManager):
         self.rumble = self.rumble_manager.rumbler
 
         # TODO: moar players
-        self.player1 = None
+        self.player = None
 
     def load_map(self, map_data):
         self.events = map_data["events"]
@@ -140,10 +140,10 @@ class Control(StateManager):
         :return:
         """
         # TODO: moar players
-        self.player1 = player
+        self.player = player
 
     def get_player(self):
-        return self.player1
+        return self.player
 
     def draw_event_debug(self):
         """ Very simple overlay of event data.  Needs some love.

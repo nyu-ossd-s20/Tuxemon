@@ -71,8 +71,7 @@ class Item(object):
     conditions = dict()
 
     def __init__(self, session,  user, slug):
-
-        self.session = game
+        self.session = session
         self.user = user
         self.slug = slug
         self.name = "None"

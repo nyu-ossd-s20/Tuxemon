@@ -611,7 +611,7 @@ class TuxemonClient():
         """
         if not event_type in self.event_list:
             self.event_list[event_type] = 0
-        pd = prepare.player1.__dict__
+        pd = prepare.player.__dict__
         map_name = self.session.get_map_name()
         event_data = {"type": event_type,
                       "event_number": self.event_list[event_type],
@@ -646,7 +646,7 @@ class TuxemonClient():
         """
         if not event_type in self.event_list:
             self.event_list[event_type] = 0
-        pd = prepare.player1.__dict__
+        pd = prepare.player.__dict__
         map_name = self.session.get_map_name()
         event_data = {"type": event_type,
                       "event_number": self.event_list[event_type],
@@ -774,7 +774,7 @@ class TuxemonClient():
         for client_id in self.client.registry:
             if self.client.registry[client_id]["sprite"] == sprite: cuuid = client_id
 
-        pd = prepare.player1.__dict__
+        pd = prepare.player.__dict__
         event_data = {"type": event_type,
                       "event_number": self.event_list[event_type],
                       "interaction": interaction,

@@ -44,7 +44,7 @@ class RenamePlayerAction(EventAction):
     def set_player_name(menu, name):
         world = menu.game.get_state_name("WorldState")
         if world:
-            world.player1.name = name
+            world.player.name = name
 
     def start(self):
         print("starting rename_player")
@@ -58,7 +58,7 @@ class RenamePlayerAction(EventAction):
             prompt=T.translate("input_name"),
             callback=self.set_player_name,
             escape_key_exits=False,
-            initial=world.player1.name
+            initial=world.player.name
         )
 
     def update(self):

@@ -80,7 +80,7 @@ class StartState(PopUpMenu):
 
         def set_player_name(text):
             world = self.control.get_state_name("WorldState")
-            world.player1.name = text
+            world.player.name = text
 
         def new_game():
             # load the starting map
