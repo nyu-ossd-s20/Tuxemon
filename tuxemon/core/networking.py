@@ -68,8 +68,7 @@ class TuxemonServer():
     """
 
     def __init__(self, session, server_name=None):
-
-        self.session = game
+        self.session = session
         if not server_name:
             self.server_name = "Default Tuxemon Server"
         else:
@@ -401,8 +400,7 @@ class TuxemonClient():
 
     """
     def __init__(self, session):
-
-        self.session = game
+        self.session = session
         self.available_games = []
         self.server_list = []
         self.selected_game = None
@@ -522,7 +520,7 @@ class TuxemonClient():
                 del self.client.event_notifies[euuid]
 
             if event_data["type"] == "NOTIFY_CLIENT_INTERACTION":
-                world = self.session.get_state_name("WorldState")
+                world = self.session.control.get_state_name("WorldState")
                 if not world:
                     return
                 world.handle_interaction(event_data, self.client.registry)
@@ -673,7 +671,7 @@ class TuxemonClient():
         :returns: None
 
         """
-        if self.session.current_state != self.session.get_state_name("WorldState"):
+        if self.session.current_state != self.session.control.get_state_name("WorldState"):
             return False
 
         event_type = None

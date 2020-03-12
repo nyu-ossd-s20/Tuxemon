@@ -49,11 +49,11 @@ class RenamePlayerAction(EventAction):
     def start(self):
         print("starting rename_player")
         # Get a copy of the world state.
-        world = self.session.get_state_name("WorldState")
+        world = self.session.control.get_state_name("WorldState")
         if not world:
             return
 
-        self.session.push_state(
+        self.session.control.push_state(
             state_name="InputMenu",
             prompt=T.translate("input_name"),
             callback=self.set_player_name,
@@ -62,6 +62,6 @@ class RenamePlayerAction(EventAction):
         )
 
     def update(self):
-        if self.session.get_state_name("InputMenu") is None:
+        if self.session.control.get_state_name("InputMenu") is None:
             self.stop()
 

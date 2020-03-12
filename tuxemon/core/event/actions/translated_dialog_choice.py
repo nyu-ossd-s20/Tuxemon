@@ -50,7 +50,7 @@ class TranslatedDialogChoiceAction(EventAction):
     def start(self):
         def set_variable(var_value):
             player.game_variables[self.parameters.variable] = var_value
-            self.session.pop_state()
+            self.session.control.pop_state()
 
         # perform text substitutions
         choices = replace_text(self.session, self.parameters.choices)
@@ -69,7 +69,7 @@ class TranslatedDialogChoiceAction(EventAction):
         self.open_choice_dialog(self.session, var_menu)
 
     def update(self):
-        if self.session.get_state_name("ChoiceState") is None:
+        if self.session.control.get_state_name("ChoiceState") is None:
             self.stop()
 
     def open_choice_dialog(self, session,  menu):

@@ -47,13 +47,13 @@ class WorldMenuState(Menu):
         super(WorldMenuState, self).startup(*args, **kwargs)
 
         def change_state(state, **kwargs):
-            return partial(self.session.replace_state, state, **kwargs)
+            return partial(self.control.replace_state, state, **kwargs)
 
         def exit_game():
-            self.session.event_engine.execute_action("quit")
+            self.control.event_engine.execute_action("quit")
 
         def not_implemented_dialog():
-            open_dialog(self.session, [T.translate('not_implemented')])
+            open_dialog(self.control, [T.translate('not_implemented')])
 
         # Main Menu - Allows users to open the main menu in game.
         menu_items_map = (
@@ -85,7 +85,7 @@ class WorldMenuState(Menu):
                 # at this point, the cursor will have changed
                 # so we need to re-arrange the list before it is rendered again
                 # TODO: API for getting the game player object
-                player = self.session.player
+                player = self.control.player
                 monster_list = player.monsters
 
                 # get the newly selected item.  it will be set to previous position
@@ -109,21 +109,21 @@ class WorldMenuState(Menu):
 
         def select_first_monster():
             # TODO: API for getting the game player obj
-            player = self.session.player
+            player = self.control.player
             monster = monster_menu.get_selected_item().game_object
             context['monster'] = monster
             context['old_index'] = player.monsters.index(monster)
-            self.session.pop_state()  # close the info/move menu
+            self.control.pop_state()  # close the info/move menu
 
         def open_monster_stats():
-            open_dialog(self.session, [T.translate('not_implemented')])
+            open_dialog(self.control, [T.translate('not_implemented')])
 
         def open_monster_submenu(menu_item):
             menu_items_map = (
                 ('monster_menu_info', open_monster_stats),
                 ('monster_menu_move', select_first_monster),
             )
-            menu = self.session.push_state("Menu")
+            menu = self.control.push_state("Menu")
             menu.shrink_to_items = True
             add_menu_items(menu, menu_items_map)
 
@@ -134,7 +134,7 @@ class WorldMenuState(Menu):
                 open_monster_submenu(menu_item)
 
         context = dict()  # dict passed around to hold info between menus/callbacks
-        monster_menu = self.session.replace_state("MonsterMenuState")
+        monster_menu = self.control.replace_state("MonsterMenuState")
         monster_menu.on_menu_selection = handle_selection
         monster_menu.on_menu_selection_change = monster_menu_hook
 

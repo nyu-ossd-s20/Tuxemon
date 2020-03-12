@@ -85,7 +85,7 @@ class WaitForInputState(state.State):
         :rtype: Optional[core.input.PlayerInput]
         """
         if event.pressed and event.button == buttons.A:
-            self.session.pop_state(self)
+            self.control.pop_state(self)
 
 
 class CombatState(CombatAnimations):
@@ -300,7 +300,7 @@ class CombatState(CombatAnimations):
             # after 3 seconds, push a state that blocks until enter is pressed
             # after the state is popped, the combat state will clean up and close
             # if you run in PvP, you need "defeated message"
-            self.task(partial(self.session.push_state, "WaitForInputState"), 2)
+            self.task(partial(self.control.push_state, "WaitForInputState"), 2)
             self.suppress_phase_change(3)
 
         elif phase == "draw match":
@@ -312,7 +312,7 @@ class CombatState(CombatAnimations):
 
             # after 3 seconds, push a state that blocks until enter is pressed
             # after the state is popped, the combat state will clean up and close
-            self.task(partial(self.session.push_state, "WaitForInputState"), 2)
+            self.task(partial(self.control.push_state, "WaitForInputState"), 2)
             self.suppress_phase_change(3)
 
         elif phase == "has winner":
@@ -329,7 +329,7 @@ class CombatState(CombatAnimations):
 
             # after 3 seconds, push a state that blocks until enter is pressed
             # after the state is popped, the combat state will clean up and close
-            self.task(partial(self.session.push_state, "WaitForInputState"), 2)
+            self.task(partial(self.control.push_state, "WaitForInputState"), 2)
             self.suppress_phase_change(3)
 
         elif phase == "end combat":
@@ -426,16 +426,16 @@ class CombatState(CombatAnimations):
         def add(menuitem):
             monster = menuitem.game_object
             if monster.current_hp == 0:
-                graphics.open_dialog(self.session, [T.format("combat_fainted", parameters={"name": monster.name})])
+                graphics.open_dialog(self.control, [T.format("combat_fainted", parameters={"name": monster.name})])
             elif monster in self.active_monsters:
-                graphics.open_dialog(self.session, [T.format("combat_isactive", parameters={"name": monster.name})])
+                graphics.open_dialog(self.control, [T.format("combat_isactive", parameters={"name": monster.name})])
                 msg = T.translate("combat_replacement_is_fainted")
-                graphics.open_dialog(self.session, [msg])
+                graphics.open_dialog(self.control, [msg])
             else:
                 self.add_monster_into_play(player, monster)
-                self.session.pop_state()
+                self.control.pop_state()
 
-        state = self.session.push_state("MonsterMenuState")
+        state = self.control.push_state("MonsterMenuState")
         # must use a partial because alert relies on a text box that may not exist
         # until after the state hs been startup
         state.task(partial(state.alert, T.translate("combat_replacement")), 0)
@@ -513,7 +513,7 @@ class CombatState(CombatAnimations):
         """ Create and show the area where battle messages are displayed
         """
         # make the border and area at the bottom of the screen for messages
-        x, y, w, h = self.session.screen.get_rect()
+        x, y, w, h = self.control.screen.get_rect()
         rect = Rect(0, 0, w, h // 4)
         rect.bottomright = w, h
         border = graphics.load_and_scale(self.borders_filename)
@@ -536,11 +536,11 @@ class CombatState(CombatAnimations):
         """
         message = T.format('combat_monster_choice', {"name": monster.name})
         self.alert(message)
-        x, y, w, h = self.session.screen.get_rect()
+        x, y, w, h = self.control.screen.get_rect()
         rect = Rect(0, 0, w // 2.5, h // 4)
         rect.bottomright = w, h
 
-        state = self.session.push_state("MainCombatMenuState", columns=2)
+        state = self.control.push_state("MainCombatMenuState", columns=2)
         state.monster = monster
         state.rect = rect
 
@@ -774,7 +774,7 @@ class CombatState(CombatAnimations):
                     # If a monster fainted, exp was given, thus the exp bar should be updated
                     # The exp bar must only be animated for the player's monsters
                     # Enemies don't have a bar, doing it for them will cause a crash
-                    for monster in self.monsters_in_play[self.session.player]:
+                    for monster in self.monsters_in_play[self.control.player]:
                         self.animate_exp(monster)
 
     def get_technique_animation(self, technique):
@@ -880,10 +880,10 @@ class CombatState(CombatAnimations):
         self._action_queue = list()
 
         # fade music out
-        self.session.event_engine.execute_action("fadeout_music", [1000])
+        self.control.event_engine.execute_action("fadeout_music", [1000])
 
         # remove any menus that may be on top of the combat state
-        while self.session.current_state is not self:
-            self.session.pop_state()
+        while self.control.current_state is not self:
+            self.control.pop_state()
 
-        self.session.push_state("FadeOutTransition", caller=self)
+        self.control.push_state("FadeOutTransition", caller=self)

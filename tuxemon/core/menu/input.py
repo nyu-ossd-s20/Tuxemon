@@ -124,4 +124,4 @@ class InputMenu(Menu):
         :return:
         """
         self.callback(self.input_string)
-        self.session.pop_state(self)
+        self.control.pop_state(self)

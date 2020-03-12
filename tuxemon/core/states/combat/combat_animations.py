@@ -153,7 +153,7 @@ class CombatAnimations(Menu):
         self._monster_sprite_map[monster] = monster_sprite
 
         # position monster_sprite off screen and set animation to move it back to final spot
-        monster_sprite.rect.top = self.session.screen.get_height()
+        monster_sprite.rect.top = self.control.screen.get_height()
         self.animate(monster_sprite.rect, bottom=feet[1], transition='out_back',
                      duration=.9, delay=fall_time + .5)
 

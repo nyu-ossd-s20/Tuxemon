@@ -80,10 +80,10 @@ class State(object):
         All init for the State, loading of config, images, etc should
         be done in State.startup or State.resume, not here.
 
-        :param control: State Manager / Control / Game... all the same
+        :param tuxemon.core.control.Control control: State Manager
         :returns: None
         """
-        self.session = control  # type: tuxemon.core.control.Control
+        self.control = control
         self.start_time = 0.0
         self.current_time = 0.0
         self.animations = pygame.sprite.Group()  # only animations and tasks

@@ -60,10 +60,10 @@ class StartPseudoBattleAction(EventAction):
         env = db.lookup(env_slug, table="environment")
 
         # Add our players and setup combat
-        self.session.push_state("CombatState", players=(player, npc), combat_type="trainer", graphics=env['battle_graphics'])
+        self.session.control.push_state("CombatState", players=(player, npc), combat_type="trainer", graphics=env['battle_graphics'])
 
         # flash the screen
-        self.session.push_state("FlashTransition")
+        self.session.control.push_state("FlashTransition")
 
         # Start some music!
         logger.info("Playing battle music!")

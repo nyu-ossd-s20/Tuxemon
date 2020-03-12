@@ -30,10 +30,10 @@ class FadeTransitionBase(State):
         self.caller = kwargs.get("caller")
 
     def resume(self):
-        size = self.session.screen.get_size()
+        size = self.control.screen.get_size()
         self.transition_surface = pygame.Surface(size)
         self.transition_surface.fill(self.color)
-        self.task(self.session.pop_state, self.state_duration)
+        self.task(self.control.pop_state, self.state_duration)
         self.create_fade_animation()
 
     def process_event(self, event):
@@ -56,10 +56,10 @@ class FadeOutTransition(FadeTransitionBase):
         self.animate(self.transition_surface, set_alpha=255, initial=0, duration=self.fade_duration)
 
     def shutdown(self):
-        if self.session.current_music["previoussong"]:
-            self.session.event_engine.execute_action("play_music", [self.session.current_music["previoussong"]])
-            self.session.current_music["previoussong"] = None
-        self.session.pop_state(self.caller)
+        if self.control.current_music["previoussong"]:
+            self.control.event_engine.execute_action("play_music", [self.control.current_music["previoussong"]])
+            self.control.current_music["previoussong"] = None
+        self.control.pop_state(self.caller)
 
 
 class FadeInTransition(FadeTransitionBase):

@@ -41,7 +41,7 @@ class ScreenTransitionAction(EventAction):
         pass
 
     def update(self):
-        world = self.session.get_state_name("WorldState")
+        world = self.session.control.get_state_name("WorldState")
 
         if world is not None:
             if not world.in_transition:

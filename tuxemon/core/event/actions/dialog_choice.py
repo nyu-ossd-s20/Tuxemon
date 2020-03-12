@@ -47,7 +47,7 @@ class DialogChoiceAction(EventAction):
     def start(self):
         def set_variable(var_value):
             player.game_variables[self.parameters.variable] = var_value
-            self.session.pop_state()
+            self.session.control.pop_state()
 
         # Get the player object from the self.session.
         player = self.session.player
@@ -64,7 +64,7 @@ class DialogChoiceAction(EventAction):
         self.open_choice_dialog(self.session, var_menu)
 
     def update(self):
-        if self.session.get_state_name("ChoiceState") is None:
+        if self.session.control.get_state_name("ChoiceState") is None:
             self.stop()
 
     def open_choice_dialog(self, session,  menu):

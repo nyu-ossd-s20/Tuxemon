@@ -65,7 +65,7 @@ class StartBattleAction(EventAction):
             logger.debug("battle is not legal, won't start")
             return False
 
-        world = self.session.get_state_name("WorldState")
+        world = self.session.control.get_state_name("WorldState")
         if not world:
             return False
 
@@ -84,12 +84,12 @@ class StartBattleAction(EventAction):
 
         # Add our players and setup combat
         logger.debug("Starting battle!")
-        self.session.push_state("CombatState", players=(player, npc), combat_type="trainer", graphics=env['battle_graphics'])
+        self.session.control.push_state("CombatState", players=(player, npc), combat_type="trainer", graphics=env['battle_graphics'])
 
         # Start some music!
         filename = env['battle_music']
         self.session.event_engine.execute_action("play_music", [filename])
 
     def update(self):
-        if self.session.get_state_name("CombatState") is None:
+        if self.session.control.get_state_name("CombatState") is None:
             self.stop()

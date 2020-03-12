@@ -52,8 +52,8 @@ class MainCombatMenuState(PopUpMenu):
         """
 
         # TODO: only works for player0
-        self.session.pop_state(self)
-        combat_state = self.session.get_state_name("CombatState")
+        self.control.pop_state(self)
+        combat_state = self.control.get_state_name("CombatState")
 
         if combat_state.is_trainer_battle:
             def open_menu():
@@ -74,25 +74,25 @@ class MainCombatMenuState(PopUpMenu):
         def swap_it(menuitem):
             monster = menuitem.game_object
 
-            if monster in self.session.get_state_name('CombatState').active_monsters:
-                tools.open_dialog(self.session, [T.format('combat_isactive', {"name": monster.name})])
+            if monster in self.control.get_state_name('CombatState').active_monsters:
+                tools.open_dialog(self.control, [T.format('combat_isactive', {"name": monster.name})])
                 return
             elif monster.current_hp < 1:
-                tools.open_dialog(self.session, [T.format('combat_fainted', {"name": monster.name})])
+                tools.open_dialog(self.control, [T.format('combat_fainted', {"name": monster.name})])
                 return
-            combat_state = self.session.get_state_name("CombatState")
+            combat_state = self.control.get_state_name("CombatState")
             swap = Technique("swap")
             swap.combat_state = combat_state
-            player = self.session.player
+            player = self.control.player
             target = monster
             combat_state.enqueue_action(player, swap, target)
-            self.session.pop_state()  # close technique menu
-            self.session.pop_state()  # close the monster action menu
+            self.control.pop_state()  # close technique menu
+            self.control.pop_state()  # close the monster action menu
 
-        menu = self.session.push_state("MonsterMenuState")
+        menu = self.control.push_state("MonsterMenuState")
         menu.on_menu_selection = swap_it
         menu.anchor("bottom", self.rect.top)
-        menu.anchor("right", self.session.screen.get_rect().right)
+        menu.anchor("right", self.control.screen.get_rect().right)
         menu.monster = self.monster
 
     def open_item_menu(self):
@@ -103,7 +103,7 @@ class MainCombatMenuState(PopUpMenu):
 
         def choose_item():
             # open menu to choose item
-            menu = self.session.push_state("ItemMenuState")
+            menu = self.control.push_state("ItemMenuState")
 
             # set next menu after after selection is made
             menu.on_menu_selection = choose_target
@@ -111,23 +111,23 @@ class MainCombatMenuState(PopUpMenu):
         def choose_target(menu_item):
             # open menu to choose target of item
             item = menu_item.game_object
-            self.session.pop_state()   # close the item menu
+            self.control.pop_state()   # close the item menu
             # TODO: don't hardcode to player0
-            combat_state = self.session.get_state_name("CombatState")
-            state = self.session.push_state("CombatTargetMenuState", player=combat_state.players[0],
-                                         user=combat_state.players[0], action=item)
+            combat_state = self.control.get_state_name("CombatState")
+            state = self.control.push_state("CombatTargetMenuState", player=combat_state.players[0],
+                                                    user=combat_state.players[0], action=item)
             state.on_menu_selection = partial(enqueue_item, item)
 
         def enqueue_item(item, menu_item):
             # enqueue the item
             target = menu_item.game_object
-            combat_state = self.session.get_state_name("CombatState")
+            combat_state = self.control.get_state_name("CombatState")
             # TODO: don't hardcode to player0
             combat_state.enqueue_action(combat_state.players[0], item, target)
 
             # close all the open menus
-            self.session.pop_state()  # close target chooser
-            self.session.pop_state()  # close the monster action menu
+            self.control.pop_state()  # close target chooser
+            self.control.pop_state()  # close the monster action menu
 
         choose_item()
 
@@ -139,7 +139,7 @@ class MainCombatMenuState(PopUpMenu):
 
         def choose_technique():
             # open menu to choose technique
-            menu = self.session.push_state("Menu")
+            menu = self.control.push_state("Menu")
             menu.shrink_to_items = True
 
             # add techniques to the menu
@@ -153,7 +153,7 @@ class MainCombatMenuState(PopUpMenu):
 
             # position the new menu
             menu.anchor("bottom", self.rect.top)
-            menu.anchor("right", self.session.screen.get_rect().right)
+            menu.anchor("right", self.control.screen.get_rect().right)
 
             # set next menu after after selection is made
             menu.on_menu_selection = choose_target
@@ -163,24 +163,24 @@ class MainCombatMenuState(PopUpMenu):
             technique = menu_item.game_object
             if technique.next_use > 0:
                 params = {"move": technique.name, "name": self.monster.name}
-                tools.open_dialog(self.session, [T.format('combat_recharging', params)])
+                tools.open_dialog(self.control, [T.format('combat_recharging', params)])
                 return
 
-            combat_state = self.session.get_state_name("CombatState")
-            state = self.session.push_state("CombatTargetMenuState", player=combat_state.players[0],
-                                         user=self.monster, action=technique)
+            combat_state = self.control.get_state_name("CombatState")
+            state = self.control.push_state("CombatTargetMenuState", player=combat_state.players[0],
+                                                    user=self.monster, action=technique)
             state.on_menu_selection = partial(enqueue_technique, technique)
 
         def enqueue_technique(technique, menu_item):
             # enqueue the technique
             target = menu_item.game_object
-            combat_state = self.session.get_state_name("CombatState")
+            combat_state = self.control.get_state_name("CombatState")
             combat_state.enqueue_action(self.monster, technique, target)
 
             # close all the open menus
-            self.session.pop_state()  # close target chooser
-            self.session.pop_state()  # close technique menu
-            self.session.pop_state()  # close the monster action menu
+            self.control.pop_state()  # close target chooser
+            self.control.pop_state()  # close technique menu
+            self.control.pop_state()  # close the monster action menu
 
         choose_technique()
 
@@ -212,7 +212,7 @@ class CombatTargetMenuState(Menu):
 
     def initialize_items(self):
         # get a ref to the combat state
-        combat_state = self.session.get_state_name("CombatState")
+        combat_state = self.control.get_state_name("CombatState")
 
         # TODO: trainer targeting
         # TODO: cleanup how monster sprites and whatnot are managed

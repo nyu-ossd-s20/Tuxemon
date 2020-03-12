@@ -102,7 +102,7 @@ class Menu(state.State):
         self.menu_sprites.empty()
         self.animations.empty()
 
-        self.session.release_controls()
+        self.control.release_controls()
 
         del self.arrow
         del self.menu_items
@@ -559,9 +559,9 @@ class Menu(state.State):
             self.state = "closing"
             ani = self.animate_close()
             if ani:
-                ani.callback = self.session.pop_state
+                ani.callback = self.control.pop_state
             else:
-                self.session.pop_state()
+                self.control.pop_state()
 
     def anchor(self, attribute, value):
         """ Set an anchor for the menu window
@@ -703,7 +703,7 @@ class PopUpMenu(Menu):
         :rtype: core.animation.Animation
         """
         # anchor the center of the popup
-        rect = self.session.screen.get_rect()
+        rect = self.control.screen.get_rect()
         self.anchor("center", rect.center)
 
         rect = self.calc_final_rect()

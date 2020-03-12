@@ -87,19 +87,19 @@ class RandomEncounterAction(EventAction):
             self.session.queue_state("CombatState", players=(player, npc), combat_type="monster", graphics=env['battle_graphics'])
 
             # stop the player
-            world = self.session.get_state_name("WorldState")
+            world = self.session.control.get_state_name("WorldState")
             world.lock_controls()
             world.stop_player()
 
             # flash the screen
-            self.session.push_state("FlashTransition")
+            self.session.control.push_state("FlashTransition")
 
             # Start some music!
             filename = env['battle_music']
             self.session.event_engine.execute_action("play_music", [filename])
 
     def update(self):
-        if self.session.get_state_name("CombatState") is None:
+        if self.session.control.get_state_name("CombatState") is None:
             self.stop()
 
 
