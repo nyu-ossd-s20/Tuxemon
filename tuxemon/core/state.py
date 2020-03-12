@@ -40,8 +40,8 @@ import pygame
 
 from tuxemon.compat import Rect
 from tuxemon.constants import paths
-from tuxemon.core import graphics
-from tuxemon.core import prepare
+from tuxemon.core import prepare, graphics
+from tuxemon.core import tools
 from tuxemon.core.animation import Animation
 from tuxemon.core.animation import Task
 from tuxemon.core.animation import remove_animations_of

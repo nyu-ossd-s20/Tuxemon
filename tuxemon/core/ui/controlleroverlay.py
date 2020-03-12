@@ -86,9 +86,8 @@ class ControllerOverlay(object):
         # Create the buttons
         self.a_button = {}
         self.a_button["surface"] = graphics.load_and_scale("gfx/a-button.png")
-        self.a_button["position"] = (prepare.SCREEN_SIZE[0] - int(self.a_button["surface"].get_width() * 1.0),
-                                     (self.dpad["position"][1] + (self.dpad["surface"].get_height() / 2) - (
-                                                 self.a_button["surface"].get_height() / 2)))
+        self.a_button["position"] = (prepare.SCREEN_SIZE[0] - int( self.a_button["surface"].get_width() * 1.0 ),
+            (self.dpad["position"][1] + (self.dpad["surface"].get_height() / 2) - (self.a_button["surface"].get_height() / 2)))
         self.a_button["rect"] = pygame.Rect(
             self.a_button["position"][0], self.a_button["position"][1],
             self.a_button["surface"].get_width(),
@@ -96,9 +95,8 @@ class ControllerOverlay(object):
 
         self.b_button = {}
         self.b_button["surface"] = graphics.load_and_scale("gfx/b-button.png")
-        self.b_button["position"] = (prepare.SCREEN_SIZE[0] - int(self.b_button["surface"].get_width() * 2.1),
-                                     (self.dpad["position"][1] + (self.dpad["surface"].get_height() / 2) - (
-                                                 self.b_button["surface"].get_height() / 2)))
+        self.b_button["position"] = (prepare.SCREEN_SIZE[0] - int( self.b_button["surface"].get_width() * 2.1 ),
+            (self.dpad["position"][1] + (self.dpad["surface"].get_height() / 2) - (self.b_button["surface"].get_height() / 2)))
         self.b_button["rect"] = pygame.Rect(
             self.b_button["position"][0],
             self.b_button["position"][1],

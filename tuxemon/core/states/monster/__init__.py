@@ -5,8 +5,7 @@ from __future__ import unicode_literals
 
 import pygame
 
-from tuxemon.core import graphics
-from tuxemon.core import prepare
+from tuxemon.core import prepare, graphics
 from tuxemon.core import tools
 from tuxemon.core.menu.interface import HpBar, ExpBar, MenuItem
 from tuxemon.core.menu.menu import Menu

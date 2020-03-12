@@ -40,8 +40,7 @@ from itertools import chain
 
 import pygame
 
-from tuxemon.core import graphics
-from tuxemon.core import state, tools
+from tuxemon.core import audio, state, tools, graphics
 from tuxemon.core.combat import check_status, fainted, get_awake_monsters, defeated
 from tuxemon.core.locale import T
 from tuxemon.core.platform.const import buttons
@@ -426,11 +425,11 @@ class CombatState(CombatAnimations):
         def add(menuitem):
             monster = menuitem.game_object
             if monster.current_hp == 0:
-                tools.open_dialog(self.game, [T.format("combat_fainted", parameters={"name": monster.name})])
+                graphics.open_dialog(self.game, [T.format("combat_fainted", parameters={"name": monster.name})])
             elif monster in self.active_monsters:
-                tools.open_dialog(self.game, [T.format("combat_isactive", parameters={"name": monster.name})])
+                graphics.open_dialog(self.game, [T.format("combat_isactive", parameters={"name": monster.name})])
                 msg = T.translate("combat_replacement_is_fainted")
-                tools.open_dialog(self.game, [msg])
+                graphics.open_dialog(self.game, [msg])
             else:
                 self.add_monster_into_play(player, monster)
                 self.game.pop_state()
@@ -644,7 +643,7 @@ class CombatState(CombatAnimations):
             message = ''
 
         try:
-            tools.load_sound(technique.sfx).play()
+            audio.load_sound(technique.sfx).play()
         except AttributeError:
             pass
 

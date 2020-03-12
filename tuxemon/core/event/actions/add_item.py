@@ -25,6 +25,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from tuxemon.core.event.eventaction import EventAction
+from tuxemon.core.item.item import Item
 
 
 class AddItemAction(EventAction):
@@ -39,4 +40,4 @@ class AddItemAction(EventAction):
 
     def start(self):
         player = self.session.player1
-        player.alter_item_quantity(self.parameters.item_slug, 1)
+        player.alter_item_quantity(self.session, self.parameters.item_slug, 1)

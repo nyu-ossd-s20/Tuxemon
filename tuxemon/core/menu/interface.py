@@ -5,8 +5,7 @@ from __future__ import unicode_literals
 
 import pygame
 
-from tuxemon.core import graphics
-from tuxemon.core import tools
+from tuxemon.core import tools, graphics
 from tuxemon.core.ui.draw import GraphicBox
 
 

@@ -38,12 +38,12 @@ from __future__ import unicode_literals
 import logging
 import pprint
 
-from tuxemon.constants import paths
-from tuxemon.core import db
-from tuxemon.core import plugin
-from tuxemon.core import tools, prepare
+from tuxemon.core import tools, prepare, graphics
 from tuxemon.core.db import db, process_targets
 from tuxemon.core.locale import T
+
+from tuxemon.core import plugin
+from tuxemon.constants import paths
 
 logger = logging.getLogger(__name__)
 
@@ -147,9 +147,9 @@ class Item(object):
         self.sprite = results["sprite"]
         self.usable_in = results["usable_in"]
         self.target = process_targets(results["target"])
-        self.effects = self.parse_effects(results["effects"])
+        self.effects = self.parse_effects(results.get("effects", []))
         self.conditions = self.parse_conditions(results.get("conditions", []))
-        self.surface = tools.load_and_scale(self.sprite)
+        self.surface = graphics.load_and_scale(self.sprite)
         self.surface_size_original = self.surface.get_size()
 
     def parse_effects(self, raw):

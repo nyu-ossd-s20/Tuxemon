@@ -36,9 +36,9 @@ from __future__ import unicode_literals
 import logging
 from math import hypot
 
-from tuxemon.compat import Rect
-from tuxemon.core import db
-from tuxemon.core import monster
+import pygame
+
+from tuxemon.core import monster, pyganim
 from tuxemon.core.db import db
 from tuxemon.core.entity import Entity
 from tuxemon.core.item.item import Item
@@ -48,6 +48,7 @@ from tuxemon.core.map import proj, dirs3, dirs2, get_direction
 from tuxemon.core.monster import decode_monsters, encode_monsters
 from tuxemon.core.prepare import CONFIG
 from tuxemon.core.tools import nearest, trunc
+from tuxemon.core.graphics import load_and_scale
 
 logger = logging.getLogger(__name__)
 

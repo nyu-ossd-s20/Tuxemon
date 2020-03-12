@@ -27,8 +27,8 @@ from __future__ import unicode_literals
 import logging
 
 from tuxemon.core.event.eventaction import EventAction
-from tuxemon.core.locale import process_translate_text
-from tuxemon.core.tools import open_dialog, get_avatar
+from tuxemon.core.tools import open_dialog
+from tuxemon.core.graphics import get_avatar
 
 logger = logging.getLogger(__name__)
 
