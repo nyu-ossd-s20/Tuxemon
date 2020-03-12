@@ -116,10 +116,6 @@ class TuxemonConfig(object):
         # not configurable from the file yet
         self.mods = ["tuxemon"]
 
-        # TODO: DEBUG.  remove before merge
-        self.starting_map = "bedroom_test.tmx"
-        assert self.starting_map == "bedroom_test.tmx"
-
 
 def get_defaults():
     """ Generate a config from defaults
