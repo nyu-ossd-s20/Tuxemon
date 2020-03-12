@@ -103,13 +103,13 @@ class EventAction(object):
     valid_parameters = list()
     _param_factory = None
 
-    def __init__(self, game, parameters):
+    def __init__(self, session, parameters):
         """
 
-        :type game: tuxemon.core.control.Control
+        :type session: tuxemon.session.Session
         :type parameters: list
         """
-        self.game = game
+        self.session = session
 
         # TODO: METACLASS
         # make a namedtuple class that will generate the parameters
