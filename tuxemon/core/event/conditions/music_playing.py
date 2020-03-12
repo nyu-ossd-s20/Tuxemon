@@ -33,7 +33,7 @@ class MusicPlayingCondition(EventCondition):
     """
     name = "music_playing"
 
-    def test(self, game, condition):
+    def test(self, session,  condition):
         """ Checks to see if a particular piece of music is playing or not.
 
         :param game: The main game object that contains all the game's variables.

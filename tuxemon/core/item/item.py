@@ -70,9 +70,9 @@ class Item(object):
     effects = dict()
     conditions = dict()
 
-    def __init__(self, game, user, slug):
+    def __init__(self, session,  user, slug):
 
-        self.game = game
+        self.session = game
         self.user = user
         self.slug = slug
         self.name = "None"
@@ -173,7 +173,7 @@ class Item(object):
                 error = 'Error: ItemEffect "{}" not implemented'.format(name)
                 logger.error(error)
             else:
-                ret.append(effect(self.game, self.user, params))
+                ret.append(effect(self.session, self.user, params))
 
         return ret
 
@@ -198,7 +198,7 @@ class Item(object):
                 error = 'Error: ItemCondition "{}" not implemented'.format(name)
                 logger.error(error)
             else:
-                ret.append(condition(params[0], self.game, self.user, params[1:]))
+                ret.append(condition(params[0], self.session, self.user, params[1:]))
 
         return ret
 
@@ -276,7 +276,7 @@ class Item(object):
         return meta_result
 
 
-def decode_inventory(game, owner, data):
+def decode_inventory(session, owner, data):
     """ Reconstruct inventory from save_data
 
     :param game:
@@ -290,7 +290,7 @@ def decode_inventory(game, owner, data):
     out = {}
     for slug, quant in (data.get('inventory') or {}).items():
         item = {
-            'item': Item(game, owner, slug)
+            'item': Item(session, owner, slug)
         }
         if quant is None:
             item["quantity"] = 1

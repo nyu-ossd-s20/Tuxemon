@@ -10,23 +10,23 @@ from tuxemon.core.menu.menu import PopUpMenu
 class InteractionMenu(PopUpMenu):
     def initialize_items(self):
         def duel():
-            self.game.wants_duel = True
+            self.session.wants_duel = True
 
         def trade():
             pass
 
         kwagrs = {
             "accept", duel,
-            "decline", self.game.pop_state
+            "decline", self.session.pop_state
         }
         kwagrs = {
             "accept", trade,
-            "decline", self.game.pop_state
+            "decline", self.session.pop_state
         }
 
-        # if self.game.game.isclient or self.game.game.ishost:
-        #    self.game.game.client.player_interact(self.player, "DUEL")
-        # self.game.game.client.player_interact(self.player, self.interaction, "CLIENT_RESPONSE", response)
+        # if self.session.game.isclient or self.session.game.ishost:
+        #    self.session.game.client.player_interact(self.player, "DUEL")
+        # self.session.game.client.player_interact(self.player, self.interaction, "CLIENT_RESPONSE", response)
 
 
 class ConfirmMenu(PopUpMenu):
@@ -47,7 +47,7 @@ class ConfirmMenu(PopUpMenu):
         # TODO: combat checks?
 
         player = self.session.player
-        item.use(player, self.game)
+        item.use(player, self.session)
 
     def initialize_items(self):
         menu_items_map = (

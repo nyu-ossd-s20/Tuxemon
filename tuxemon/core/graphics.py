@@ -298,7 +298,7 @@ def capture_screenshot(game):
     return screenshot
 
 
-def get_avatar(game, avatar):
+def get_avatar(session, avatar):
     """Gets the avatar sprite of a monster or NPC.
 
     Used to parse the string values for dialog event actions
@@ -316,7 +316,7 @@ def get_avatar(game, avatar):
 
     if avatar and avatar.isdigit():
         try:
-            player = game.player1
+            player = session.player
             slot = int(avatar)
             return player.monsters[slot].get_sprite("menu")
         except IndexError:

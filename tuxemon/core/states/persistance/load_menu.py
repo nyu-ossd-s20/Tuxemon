@@ -25,21 +25,21 @@ class LoadMenuState(SaveMenuState):
     def on_menu_selection(self, menuitem):
         save_data = save.load(self.selected_index + 1)
         if save_data and "error" not in save_data:
-            self.session.player.set_state(self.game, save_data)
+            self.session.player.set_state(self.session, save_data)
 
-            old_world = self.game.get_state_name("WorldState")
+            old_world = self.session.get_state_name("WorldState")
             if old_world is None:
                 # when game is loaded from the start menu
-                self.game.pop_state()  # close this menu
-                self.game.pop_state()  # close the start menu
+                self.session.pop_state()  # close this menu
+                self.session.pop_state()  # close the start menu
             else:
                 # when game is loaded from world menu
-                self.game.pop_state(self)
-                self.game.pop_state(old_world)
+                self.session.pop_state(self)
+                self.session.pop_state(old_world)
 
-            self.game.push_state("WorldState")
+            self.session.push_state("WorldState")
 
             # teleport the player to the correct position using an event engine action
             tele_x, tele_y = save_data['tile_pos']
             params = [save_data['current_map'], tele_x, tele_y]
-            self.game.event_engine.execute_action('teleport', params)
+            self.session.event_engine.execute_action('teleport', params)

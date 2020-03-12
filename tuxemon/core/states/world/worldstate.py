@@ -75,7 +75,7 @@ class WorldState(state.State):
 
     def startup(self):
         # Provide access to the screen surface
-        self.screen = self.game.screen
+        self.screen = self.session.screen
         self.screen_rect = self.screen.get_rect()
         self.resolution = prepare.SCREEN_SIZE
         self.tile_size = prepare.TILE_SIZE
@@ -241,7 +241,7 @@ class WorldState(state.State):
             self.delayed_teleport = False
 
     def set_transition_surface(self, color=(0, 0, 0)):
-        self.transition_surface = pygame.Surface(self.game.screen.get_size())
+        self.transition_surface = pygame.Surface(self.session.screen.get_size())
         self.transition_surface.fill(color)
 
     def broadcast_player_teleport_change(self):
@@ -250,21 +250,21 @@ class WorldState(state.State):
         :return:
         """
         # Set the transition variable in event_data to false when we're done
-        self.game.event_data["transition"] = False
+        self.session.event_data["transition"] = False
 
         # Update the server/clients of our new map and populate any other players.
-        if self.game.isclient or self.game.ishost:
-            self.game.add_clients_to_map(self.game.client.client.registry)
-            self.game.client.update_player(self.player1.facing)
+        if self.session.isclient or self.session.ishost:
+            self.session.add_clients_to_map(self.session.client.client.registry)
+            self.session.client.update_player(self.player1.facing)
 
         # Update the location of the npcs. Doesn't send network data.
         for npc in self.npcs.values():
             char_dict = {"tile_pos": npc.tile_pos}
-            networking.update_client(npc, char_dict, self.game)
+            networking.update_client(npc, char_dict, self.session)
 
         for npc in self.npcs_off_map.values():
             char_dict = {"tile_pos": npc.tile_pos}
-            networking.update_client(npc, char_dict, self.game)
+            networking.update_client(npc, char_dict, self.session)
 
     def update(self, time_delta):
         """The primary game loop that executes the world's game functions every frame.
@@ -330,8 +330,8 @@ class WorldState(state.State):
         if event.button == intentions.WORLD_MENU:
             if event.pressed:
                 logger.info("Opening main menu!")
-                self.game.release_controls()
-                self.game.push_state("WorldMenuState")
+                self.session.release_controls()
+                self.session.push_state("WorldMenuState")
                 return
 
         # map may not have a player registered
@@ -347,9 +347,9 @@ class WorldState(state.State):
 
         if event.button == intentions.RUN:
             if event.held:
-                self.player1.moverate = self.game.config.player_runrate
+                self.player1.moverate = self.session.config.player_runrate
             else:
-                self.player1.moverate = self.game.config.player_walkrate
+                self.player1.moverate = self.session.config.player_walkrate
 
         # If we receive an arrow key press, set the facing and
         # moving direction to that direction
@@ -706,7 +706,7 @@ class WorldState(state.State):
         :return:
         """
         self.wants_to_move_player = None
-        self.game.release_controls()
+        self.session.release_controls()
         self.player1.cancel_movement()
 
     def stop_and_reset_player(self):
@@ -720,7 +720,7 @@ class WorldState(state.State):
         :return:
         """
         self.wants_to_move_player = None
-        self.game.release_controls()
+        self.session.release_controls()
         self.player1.abort_movement()
 
     def move_player(self, direction):
@@ -765,7 +765,7 @@ class WorldState(state.State):
 
             if entity.update_location:
                 char_dict = {"tile_pos": entity.final_move_dest}
-                networking.update_client(entity, char_dict, self.game)
+                networking.update_client(entity, char_dict, self.session)
                 entity.update_location = False
 
         # Move any multiplayer characters that are off map so we know where they should be when we change maps.
@@ -797,7 +797,7 @@ class WorldState(state.State):
         surface.lock()
 
         # draw events
-        for event in self.game.events:
+        for event in self.session.events:
             topleft = self.get_pos_from_tilepos((event.x, event.y))
             size = self.project((event.w, event.h))
             rect = topleft, size
@@ -927,7 +927,7 @@ class WorldState(state.State):
         self.invalid_x = (-1, self.map_size[0])
         self.invalid_y = (-1, self.map_size[1])
 
-        self.game.load_map(map_data)
+        self.session.load_map(map_data)
 
         # Clear out any existing NPCs
         self.npcs = {}
@@ -939,7 +939,7 @@ class WorldState(state.State):
         self.stop_player()
 
         # move to spawn position, if any
-        for eo in self.game.events:
+        for eo in self.session.events:
             if eo.name.lower() == "player spawn":
                 self.player1.set_position((eo.x, eo.y))
 
@@ -1001,7 +1001,7 @@ class WorldState(state.State):
                         tile_pos = (int(round(npc.tile_pos[0])), int(round(npc.tile_pos[1])))
                         if tile_pos == tile:
                             logger.info("Opening interaction menu!")
-                            self.game.push_state("InteractionMenu")
+                            self.session.push_state("InteractionMenu")
                             return True
                         else:
                             continue
@@ -1020,7 +1020,7 @@ class WorldState(state.State):
         """
         target = registry[event_data["target"]]["sprite"]
         target_name = str(target.name)
-        networking.update_client(target, event_data["char_dict"], self.game)
+        networking.update_client(target, event_data["char_dict"], self.session)
         if event_data["interaction"] == "DUEL":
             if not event_data["response"]:
                 self.interaction_menu.visible = True
@@ -1031,7 +1031,7 @@ class WorldState(state.State):
             else:
                 if self.wants_duel:
                     if event_data["response"] == "Accept":
-                        world = self.game.current_state
+                        world = self.session.current_state
                         pd = world.player1.__dict__
                         event_data = {"type": "CLIENT_INTERACTION",
                                       "interaction": "START_DUEL",
@@ -1042,4 +1042,4 @@ class WorldState(state.State):
                                                     }
 
                                       }
-                        self.game.server.notify_client_interaction(cuuid, event_data)
+                        self.session.server.notify_client_interaction(cuuid, event_data)

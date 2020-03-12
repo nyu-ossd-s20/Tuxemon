@@ -33,7 +33,7 @@ class ButtonPressedCondition(EventCondition):
     """
     name = "button_pressed"
 
-    def test(self, game, condition):
+    def test(self, session,  condition):
         """ Checks to see if a particular key was pressed
 
         :param game: The main game object that contains all the game's variables.

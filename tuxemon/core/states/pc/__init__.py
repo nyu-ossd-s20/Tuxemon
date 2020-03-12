@@ -62,12 +62,12 @@ class PCState(PopUpMenu):
         super(PCState, self).startup(*items, **kwargs)
 
         def change_state(state, **kwargs):
-            return partial(self.game.replace_state, state, **kwargs)
+            return partial(self.session.replace_state, state, **kwargs)
 
         add_menu_items(self, (('menu_monsters', change_state('MonsterMenuState')),
                               ('menu_items', change_state('ItemMenuState')),
                               ('menu_multiplayer', change_state('MultiplayerMenu')),
-                              ('log_off', self.game.pop_state)))
+                              ('log_off', self.session.pop_state)))
 
 
 class MultiplayerMenu(PopUpMenu):
@@ -87,54 +87,54 @@ class MultiplayerMenu(PopUpMenu):
     def host_game(self):
 
         # check if server is already hosting a game
-        if self.game.server.listening:
-            self.game.pop_state(self)
-            open_dialog(self.game, [T.translate('multiplayer_already_hosting')])
+        if self.session.server.listening:
+            self.session.pop_state(self)
+            open_dialog(self.session, [T.translate('multiplayer_already_hosting')])
 
         # not hosting, so start the process
-        elif not self.game.isclient:
+        elif not self.session.isclient:
             # Configure this game to host
-            self.game.ishost = True
-            self.game.server.server.listen()
-            self.game.server.listening = True
+            self.session.ishost = True
+            self.session.server.server.listen()
+            self.session.server.listening = True
 
             # Enable the client, so we can connect to self
-            self.game.client.enable_join_multiplayer = True
-            self.game.client.client.listen()
-            self.game.client.listening = True
+            self.session.client.enable_join_multiplayer = True
+            self.session.client.client.listen()
+            self.session.client.listening = True
 
             # connect to self
-            while not self.game.client.client.registered:
-                self.game.client.client.autodiscover(autoregister=False)
-                for game in self.game.client.client.discovered_servers:
-                    self.game.client.client.register(game)
+            while not self.session.client.client.registered:
+                self.session.client.client.autodiscover(autoregister=False)
+                for game in self.session.client.client.discovered_servers:
+                    self.session.client.client.register(game)
 
             # close this menu
-            self.game.pop_state(self)
+            self.session.pop_state(self)
 
             # inform player that hosting is ready
-            open_dialog(self.game, [T.translate('multiplayer_hosting_ready')])
+            open_dialog(self.session, [T.translate('multiplayer_hosting_ready')])
 
     def scan_for_games(self):
         # start the game scanner
-        if not self.game.ishost:
-            self.game.client.enable_join_multiplayer = True
-            self.game.client.listening = True
-            self.game.client.client.listen()
+        if not self.session.ishost:
+            self.session.client.enable_join_multiplayer = True
+            self.session.client.listening = True
+            self.session.client.client.listen()
 
         # open menu to select games
-        self.game.push_state("MultiplayerSelect")
+        self.session.push_state("MultiplayerSelect")
 
     def join_by_ip(self):
-        self.game.push_state("InputMenu", prompt=T.translate("multiplayer_join_prompt"))
+        self.session.push_state("InputMenu", prompt=T.translate("multiplayer_join_prompt"))
 
     def join(self):
-        if self.game.ishost:
+        if self.session.ishost:
             return
         else:
-            self.game.client.enable_join_multiplayer = True
-            self.game.client.listening = True
-            self.game.client.client.listen()
+            self.session.client.enable_join_multiplayer = True
+            self.session.client.listening = True
+            self.session.client.client.listen()
 
 
 class MultiplayerSelect(PopUpMenu):
@@ -149,7 +149,7 @@ class MultiplayerSelect(PopUpMenu):
         self.task(self.reload_items, 1, -1)
 
     def initialize_items(self):
-        servers = self.game.client.server_list
+        servers = self.session.client.server_list
         if servers:
             for server in servers:
                 label = self.shadow_text(server)

@@ -49,7 +49,7 @@ class SetVariableAction(EventAction):
     ]
 
     def start(self):
-        # Get the player object from the self.game.
+        # Get the player object from the self.session.
         player = self.session.player
 
         # Split the variable into a key: value pair

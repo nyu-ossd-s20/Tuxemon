@@ -1,6 +1,6 @@
 """
 There are quite a few hacks in here to get this working for single player only
-notably, the use of self.game
+notably, the use of self.session
 """
 
 from __future__ import absolute_import
@@ -153,7 +153,7 @@ class CombatAnimations(Menu):
         self._monster_sprite_map[monster] = monster_sprite
 
         # position monster_sprite off screen and set animation to move it back to final spot
-        monster_sprite.rect.top = self.game.screen.get_height()
+        monster_sprite.rect.top = self.session.screen.get_height()
         self.animate(monster_sprite.rect, bottom=feet[1], transition='out_back',
                      duration=.9, delay=fall_time + .5)
 

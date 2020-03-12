@@ -124,4 +124,4 @@ class InputMenu(Menu):
         :return:
         """
         self.callback(self.input_string)
-        self.game.pop_state(self)
+        self.session.pop_state(self)

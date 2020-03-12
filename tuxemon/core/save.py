@@ -65,7 +65,7 @@ def get_save_data(game):
     :returns: Game data to save, must be JSON encodable.
 
     """
-    save_data = game.player1.get_state(game)
+    save_data = session.player.get_state(game)
     screenshot = capture_screenshot(game)
     save_data['screenshot'] = base64.b64encode(pygame.image.tostring(screenshot, "RGB")).decode('utf-8')
     save_data['screenshot_width'] = screenshot.get_width()

@@ -86,7 +86,7 @@ class ItemCondition(object):
     valid_parameters = list()
     _param_factory = None
 
-    def __init__(self, context, game, user, parameters):
+    def __init__(self, context, session,  user, parameters):
         """
 
         :type context: str
@@ -94,7 +94,7 @@ class ItemCondition(object):
         :type parameters: list
         """
 
-        self.game = game
+        self.session = game
         self.user = user
         self.context = context
 

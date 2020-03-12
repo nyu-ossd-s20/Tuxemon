@@ -55,9 +55,9 @@ class DialogState(PopUpMenu):
 
             elif self.next_text() is None:
                 if self.menu:
-                    self.game.push_state("ChoiceState", menu=self.menu, rect=self.text_area.rect)
+                    self.session.push_state("ChoiceState", menu=self.menu, rect=self.text_area.rect)
                 else:
-                    self.game.pop_state(self)
+                    self.session.pop_state(self)
 
     def next_text(self):
         try:

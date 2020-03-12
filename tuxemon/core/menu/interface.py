@@ -108,7 +108,7 @@ class MenuItem(pygame.sprite.Sprite):
             self.rect = image.get_rect()
         self.label = label
         self.description = description
-        self.game_object = game_object
+        self.session_object = game_object
 
         self.enabled = True
         self._in_focus = False

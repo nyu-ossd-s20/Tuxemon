@@ -49,7 +49,7 @@ class DialogContext(EventContext):
 
     def execute(self, game):
         # Open a dialog window in the current scene.
-        open_dialog(game, self._dialog_chain_queue, self._avatar, self._menu)
+        open_dialog(session, self._dialog_chain_queue, self._avatar, self._menu)
         self._dialog_chain_queue = list()
         self._avatar = None
         self._menu = None

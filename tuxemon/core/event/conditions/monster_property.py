@@ -32,7 +32,7 @@ class MonsterPropertyCondition(EventCondition):
     """
     name = "monster_property"
 
-    def test(self, game, condition):
+    def test(self, session,  condition):
         """Checks to see if a monster property or condition is as asked
 
         :param game: The main game object that contains all the game's variables.
@@ -50,10 +50,10 @@ class MonsterPropertyCondition(EventCondition):
         prop = condition.parameters[1]
         val = condition.parameters[2]
 
-        if int(slot) >= len(game.player1.monsters):
+        if int(slot) >= len(session.player.monsters):
             return False
 
-        monster = game.player1.monsters[slot]
+        monster = session.player.monsters[slot]
         if prop == "name":
             return monster.name == val
         elif prop == "level":

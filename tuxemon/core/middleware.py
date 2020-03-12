@@ -50,7 +50,7 @@ class Multiplayer():
 
     """
     def __init__(self, game_server=None):
-        self.game_server = game_server
+        self.session_server = game_server
         self.server = None
 
     def event_legal(self, cuuid, euuid, event_data):
@@ -80,7 +80,7 @@ class Multiplayer():
             return False
 
     def event_execute(self, cuuid, euuid, event_data):
-        self.game_server.server_event_handler(cuuid, event_data)
+        self.session_server.server_event_handler(cuuid, event_data)
 
 class Controller():
     """This middleware will allow you to use the AsteriaServer for Multiplayer games and the mobile controller.
@@ -95,7 +95,7 @@ class Controller():
 
     """
     def __init__(self, game_server=None):
-        self.game_server = game_server
+        self.session_server = game_server
         self.server = None
 
     def event_legal(self, cuuid, euuid, event_data):
@@ -104,4 +104,4 @@ class Controller():
 
     def event_execute(self, cuuid, euuid, event_data):
         if "KEYDOWN:" in event_data or "KEYUP:" in event_data:
-            self.game_server.network_events.append(event_data)
+            self.session_server.network_events.append(event_data)

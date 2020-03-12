@@ -37,7 +37,7 @@ class ItemMenuState(Menu):
         self.menu_items.line_spacing = tools.scale(7)
 
         # this is the area where the item description is displayed
-        rect = self.game.screen.get_rect()
+        rect = self.session.screen.get_rect()
         rect.top = tools.scale(106)
         rect.left = tools.scale(3)
         rect.width = tools.scale(250)
@@ -60,8 +60,8 @@ class ItemMenuState(Menu):
         return rect
 
     def determine_state_called_from(self):
-        dex = self.game.active_states.index(self)
-        return self.game.active_states[dex + 1].name
+        dex = self.session.active_states.index(self)
+        return self.session.active_states[dex + 1].name
 
     def on_menu_selection(self, menu_item):
         """ Called when player has selected something from the inventory
@@ -76,10 +76,10 @@ class ItemMenuState(Menu):
 
         if not any(menu_item.game_object.validate(m) for m in self.session.player.monsters):
             msg = T.format('item_no_available_target', {'name': item.name})
-            tools.open_dialog(self.game, [msg])
+            tools.open_dialog(self.session, [msg])
         elif state not in item.usable_in:
             msg = T.format('item_cannot_use_here', {'name': item.name})
-            tools.open_dialog(self.game, [msg])
+            tools.open_dialog(self.session, [msg])
         else:
             self.open_confirm_use_menu(item)
 
@@ -96,29 +96,29 @@ class ItemMenuState(Menu):
             # item must be used before state is popped.
             # don't try to combine with "if result..." condition below
             result = item.use(player, monster)
-            self.game.pop_state()  # pop the monster screen
-            self.game.pop_state()  # pop the item screen
+            self.session.pop_state()  # pop the monster screen
+            self.session.pop_state()  # pop the item screen
 
             msg_type = 'use_success' if result['success'] else 'use_failure'
             template = getattr(item, msg_type)
             if template:
                 message = T.translate(template)
-                tools.open_dialog(self.game, [message])
+                tools.open_dialog(self.session, [message])
 
         def confirm():
-            self.game.pop_state()  # close the confirm dialog
+            self.session.pop_state()  # close the confirm dialog
             # TODO: allow items to be used on player or "in general"
 
-            menu = self.game.push_state("MonsterMenuState")
+            menu = self.session.push_state("MonsterMenuState")
             menu.is_valid_entry = item.validate
             menu.on_menu_selection = use_item
 
         def cancel():
-            self.game.pop_state()  # close the use/cancel menu
+            self.session.pop_state()  # close the use/cancel menu
 
         def open_choice_menu():
             # open the menu for use/cancel
-            menu = self.game.push_state("Menu")
+            menu = self.session.push_state("Menu")
             menu.shrink_to_items = True
 
             menu_items_map = (
@@ -214,7 +214,7 @@ class ShopMenuState(Menu):
         self.menu_items.line_spacing = tools.scale(7)
 
         # this is the area where the item description is displayed
-        rect = self.game.screen.get_rect()
+        rect = self.session.screen.get_rect()
         rect.top = tools.scale(106)
         rect.left = tools.scale(3)
         rect.width = tools.scale(250)
@@ -252,14 +252,14 @@ class ShopMenuState(Menu):
                 return
 
             if self.buyer:
-                self.seller.give_item(self.game, self.buyer, item, quantity)
+                self.seller.give_item(self.session, self.buyer, item, quantity)
             else:
                 self.seller.alter_item_quantity(item.slug, -quantity)
             self.reload_items()
 
         item_dict = self.seller.inventory[item.slug]
         max_quantity = None if item_dict.get("infinite") else item_dict['quantity']
-        self.game.push_state(
+        self.session.push_state(
             "QuantityMenu",
             callback=use_item,
             max_quantity=max_quantity,

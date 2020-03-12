@@ -99,7 +99,7 @@ class EventEngine(object):
     """
 
     def __init__(self, game):
-        self.game = game
+        self.session = game
 
         self.conditions = dict()
         self.actions = dict()
@@ -152,7 +152,7 @@ class EventEngine(object):
             logger.error(error)
 
         else:
-            return action(self.game, parameters)
+            return action(self.session, parameters)
 
     def get_condition(self, name):
         """ Get a condition that is loaded into the engine
@@ -186,13 +186,13 @@ class EventEngine(object):
         :type map_event: core.event.MapEvent
         :rtype: bool
         """
-        with add_error_context(map_event, cond_data, self.game):
+        with add_error_context(map_event, cond_data, self.session):
             map_condition = self.get_condition(cond_data.type)
             if map_condition is None:
                 logger.debug('map condition "{}" is not loaded'.format(cond_data.type))
                 return False
 
-            result = map_condition.test(self.game, cond_data) == (cond_data.operator == 'is')
+            result = map_condition.test(self.session, cond_data) == (cond_data.operator == 'is')
             logger.debug('map condition "{}": {} ({})'.format(map_condition.name, result, cond_data))
             return result
 
@@ -306,12 +306,12 @@ class EventEngine(object):
         # do the "init" events.  this will be done just once
         # TODO: find solution that doesn't nuke the init list
         # TODO: make event engine generic, so can be used in global scope, not just maps
-        if self.game.inits:
-            self.process_map_events(self.game.inits)
-            self.game.inits = list()
+        if self.session.inits:
+            self.process_map_events(self.session.inits)
+            self.session.inits = list()
 
         # process any other events
-        self.process_map_events(self.game.events)
+        self.process_map_events(self.session.events)
 
     def update_running_events(self, dt):
         """ Update the events that are running
@@ -363,7 +363,7 @@ class EventEngine(object):
 
                         else:
                             # start the action
-                            with add_error_context(e.map_event, next_action, self.game):
+                            with add_error_context(e.map_event, next_action, self.session):
                                 action.start()
 
                             # save the action that is running
@@ -371,7 +371,7 @@ class EventEngine(object):
 
                 # update the action
                 action = e.current_action
-                with add_error_context(e.map_event, e.current_map_action, self.game):
+                with add_error_context(e.map_event, e.current_map_action, self.session):
                     action.update()
 
                 if action.done:
@@ -408,7 +408,7 @@ class EventEngine(object):
         """
         # has the player pressed the action key?
         if event.pressed and event.button == buttons.A:
-            for map_event in self.game.interacts:
+            for map_event in self.session.interacts:
                 self.process_map_event(map_event)
 
         return event

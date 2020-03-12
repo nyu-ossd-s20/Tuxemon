@@ -31,7 +31,7 @@ class TeleportFaintAction(EventAction):
     name = "teleport_faint"
 
     def start(self):
-        # Get the player object from the self.game.
+        # Get the player object from the self.session.
         player = self.session.player
 
         # Start with the default value, override if game variable exists
@@ -40,7 +40,7 @@ class TeleportFaintAction(EventAction):
             teleport = player.game_variables['teleport_faint'].split(" ")
 
         # Start the screen transition
-        # self.game.event_engine.execute_action("screen_transition", [.3])
+        # self.session.event_engine.execute_action("screen_transition", [.3])
 
         # Call the teleport action
-        self.game.event_engine.execute_action("teleport", teleport)
+        self.session.event_engine.execute_action("teleport", teleport)

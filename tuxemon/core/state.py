@@ -83,7 +83,7 @@ class State(object):
         :param control: State Manager / Control / Game... all the same
         :returns: None
         """
-        self.game = control  # type: tuxemon.core.control.Control
+        self.session = control  # type: tuxemon.core.control.Control
         self.start_time = 0.0
         self.current_time = 0.0
         self.animations = pygame.sprite.Group()  # only animations and tasks

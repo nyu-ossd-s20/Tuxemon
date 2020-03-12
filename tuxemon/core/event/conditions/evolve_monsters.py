@@ -32,7 +32,7 @@ class EvolveMonstersCondition(EventCondition):
     """
     name = "evolve_monsters"
 
-    def test(self, game, condition):
+    def test(self, session,  condition):
         """Checks to see if a monster can be evolved on the specified evolutionary path
 
         :param game: The main game object that contains all the game's variables.
@@ -46,7 +46,7 @@ class EvolveMonstersCondition(EventCondition):
         :returns: True or False
 
         """
-        player = game.player1
+        player = session.player
         for monster in player.monsters:
             new_slug = monster.get_evolution(condition.parameters[0])
             if new_slug:

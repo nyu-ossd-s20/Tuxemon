@@ -44,14 +44,14 @@ class VariableMathAction(EventAction):
     ]
 
     def start(self):
-        # Get the player object from the self.game.
+        # Get the player object from the self.session.
         player = self.session.player
 
         # Read the parameters
         var = self.parameters.var
-        operand1 = number_or_variable(self.game, var)
+        operand1 = number_or_variable(self.session, var)
         operation = self.parameters.operation
-        operand2 = number_or_variable(self.game, self.parameters.value)
+        operand2 = number_or_variable(self.session, self.parameters.value)
 
         # Preform the operation on the variable
         if operation == "+":

@@ -137,7 +137,7 @@ def calc_dialog_rect(screen_rect):
     return rect
 
 
-def open_dialog(game, text, avatar=None, menu=None):
+def open_dialog(session, text, avatar=None, menu=None):
     """ Open a dialog with the standard window size
 
     :param game:
@@ -164,7 +164,7 @@ def trunc(l):
     return tuple(int(i) for i in l)
 
 
-def number_or_variable(game, value):
+def number_or_variable(session, value):
     """ Returns a numeric game variable by its name
     If value is already a number, convert from string to float and return that
 
@@ -175,7 +175,7 @@ def number_or_variable(game, value):
 
     :raises: ValueError
     """
-    player = game.player1
+    player = session.player
     if value.isdigit():
         return float(value)
     else:

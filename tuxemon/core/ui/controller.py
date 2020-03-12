@@ -56,7 +56,7 @@ class Controller(object):
 
     """
     def __init__(self, game):
-        self.game = game
+        self.session = game
         self.dpad = {}
 
     def load(self):

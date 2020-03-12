@@ -67,9 +67,9 @@ class TuxemonServer():
 
     """
 
-    def __init__(self, game, server_name=None):
+    def __init__(self, session, server_name=None):
 
-        self.game = game
+        self.session = game
         if not server_name:
             self.server_name = "Default Tuxemon Server"
         else:
@@ -296,8 +296,8 @@ class ControllerServer():
 
     """
 
-    def __init__(self, game):
-        self.game = game
+    def __init__(self, session):
+        self.session = game
         self.network_events = []
         self.listening = False
         self.interfaces = {}
@@ -323,8 +323,8 @@ class ControllerServer():
         controller_events = self.net_controller_loop()
         if controller_events:
             for controller_event in controller_events:
-                self.game.key_events.append(controller_event)
-                self.game.current_state.process_event(controller_event)
+                self.session.key_events.append(controller_event)
+                self.session.current_state.process_event(controller_event)
 
     def net_controller_loop(self):
         """Process all network events from controllers and pass them
@@ -340,40 +340,40 @@ class ControllerServer():
         events = []
         for event_data in self.network_events:
             if event_data == "KEYDOWN:up":
-                event = self.game.keyboard_events["KEYDOWN"]["up"]
+                event = self.session.keyboard_events["KEYDOWN"]["up"]
 
             elif event_data == "KEYUP:up":
-                event = self.game.keyboard_events["KEYUP"]["up"]
+                event = self.session.keyboard_events["KEYUP"]["up"]
 
             elif event_data == "KEYDOWN:down":
-                event = self.game.keyboard_events["KEYDOWN"]["down"]
+                event = self.session.keyboard_events["KEYDOWN"]["down"]
 
             elif event_data == "KEYUP:down":
-                event = self.game.keyboard_events["KEYUP"]["down"]
+                event = self.session.keyboard_events["KEYUP"]["down"]
 
             elif event_data == "KEYDOWN:left":
-                event = self.game.keyboard_events["KEYDOWN"]["left"]
+                event = self.session.keyboard_events["KEYDOWN"]["left"]
 
             elif event_data == "KEYUP:left":
-                event = self.game.keyboard_events["KEYUP"]["left"]
+                event = self.session.keyboard_events["KEYUP"]["left"]
 
             elif event_data == "KEYDOWN:right":
-                event = self.game.keyboard_events["KEYDOWN"]["right"]
+                event = self.session.keyboard_events["KEYDOWN"]["right"]
 
             elif event_data == "KEYUP:right":
-                event = self.game.keyboard_events["KEYUP"]["right"]
+                event = self.session.keyboard_events["KEYUP"]["right"]
 
             elif event_data == "KEYDOWN:enter":
-                event = self.game.keyboard_events["KEYDOWN"]["enter"]
+                event = self.session.keyboard_events["KEYDOWN"]["enter"]
 
             elif event_data == "KEYUP:enter":
-                event = self.game.keyboard_events["KEYUP"]["enter"]
+                event = self.session.keyboard_events["KEYUP"]["enter"]
 
             elif event_data == "KEYDOWN:esc":
-                event = self.game.keyboard_events["KEYDOWN"]["escape"]
+                event = self.session.keyboard_events["KEYDOWN"]["escape"]
 
             elif event_data == "KEYUP:esc":
-                event = self.game.keyboard_events["KEYUP"]["escape"]
+                event = self.session.keyboard_events["KEYUP"]["escape"]
 
             else:
                 logger.debug("Unknown network event: " +str(event_data))
@@ -400,9 +400,9 @@ class TuxemonClient():
     :returns: None
 
     """
-    def __init__(self, game):
+    def __init__(self, session):
 
-        self.game = game
+        self.session = game
         self.available_games = []
         self.server_list = []
         self.selected_game = None
@@ -438,7 +438,7 @@ class TuxemonClient():
             self.join_multiplayer(time_delta)
 
         if self.client.registered and not self.populated:
-            self.game.isclient = True
+            self.session.isclient = True
             self.populate_player()
 
         if self.ping_time >= 2:
@@ -469,8 +469,8 @@ class TuxemonClient():
             if event_data["type"] == "NOTIFY_PUSH_SELF":
                 if not event_data["cuuid"] in self.client.registry:
                     self.client.registry[str(event_data["cuuid"])]={}
-                sprite = populate_client(event_data["cuuid"], event_data, self.game, self.client.registry)
-                update_client(sprite, event_data["char_dict"], self.game)
+                sprite = populate_client(event_data["cuuid"], event_data, self.session, self.client.registry)
+                update_client(sprite, event_data["char_dict"], self.session)
                 del self.client.event_notifies[euuid]
 
             if event_data["type"] == "NOTIFY_CLIENT_MOVE_START":
@@ -522,7 +522,7 @@ class TuxemonClient():
                 del self.client.event_notifies[euuid]
 
             if event_data["type"] == "NOTIFY_CLIENT_INTERACTION":
-                world = self.game.get_state_name("WorldState")
+                world = self.session.get_state_name("WorldState")
                 if not world:
                     return
                 world.handle_interaction(event_data, self.client.registry)
@@ -550,7 +550,7 @@ class TuxemonClient():
 
         """
         # Don't allow player to join another game if they are hosting.
-        if self.game.ishost:
+        if self.session.ishost:
             self.enable_join_multiplayer = False
             return False
 
@@ -561,7 +561,7 @@ class TuxemonClient():
 
         # Join a game if we have already selected one.
         if self.selected_game:
-            self.client.register(self.selected_game)
+            self.client.register(self.selected_session)
 
         # Once per second send a server discovery packet.
         if self.wait_broadcast >= self.wait_delay:
@@ -614,7 +614,7 @@ class TuxemonClient():
         if not event_type in self.event_list:
             self.event_list[event_type] = 0
         pd = prepare.player1.__dict__
-        map_name = self.game.get_map_name()
+        map_name = self.session.get_map_name()
         event_data = {"type": event_type,
                       "event_number": self.event_list[event_type],
                       "sprite_name": pd["sprite_name"],
@@ -649,7 +649,7 @@ class TuxemonClient():
         if not event_type in self.event_list:
             self.event_list[event_type] = 0
         pd = prepare.player1.__dict__
-        map_name = self.game.get_map_name()
+        map_name = self.session.get_map_name()
         event_data = {"type": event_type,
                       "event_number": self.event_list[event_type],
                       "map_name": map_name,
@@ -673,7 +673,7 @@ class TuxemonClient():
         :returns: None
 
         """
-        if self.game.current_state != self.game.get_state_name("WorldState"):
+        if self.session.current_state != self.session.get_state_name("WorldState"):
             return False
 
         event_type = None
@@ -722,7 +722,7 @@ class TuxemonClient():
 
         if event_type and kb_key:
             if event_type == "CLIENT_FACING":
-                if self.game.isclient or self.game.ishost:
+                if self.session.isclient or self.session.ishost:
                     event_data = {"type": event_type,
                                   "event_number": self.event_list[event_type],
                                   "char_dict": {"facing": kb_key}
@@ -754,7 +754,7 @@ class TuxemonClient():
         """
         sprite = self.client.registry[cuuid]["sprite"]
         self.client.registry[cuuid]["map_name"] = event_data["map_name"]
-        update_client(sprite, event_data["char_dict"], self.game)
+        update_client(sprite, event_data["char_dict"], self.session)
 
     def player_interact(self, sprite, interaction, event_type="CLIENT_INTERACTION", response=None):
         """Sends client to client interaction request to the server.
@@ -831,7 +831,7 @@ class DummyNetworking(object):
 
 
 # Universal functions
-def populate_client(cuuid, event_data, game, registry):
+def populate_client(cuuid, event_data, session, registry):
     """Creates an NPC to represent the client character and adds the
     information to the registry.
 
@@ -860,7 +860,7 @@ def populate_client(cuuid, event_data, game, registry):
     tile_pos_x = int(char_dict["tile_pos"][0])
     tile_pos_y = int(char_dict["tile_pos"][1])
 
-    sprite = Npc().create_npc(game,(None, str(nm)+","+str(tile_pos_x)+","+str(tile_pos_y)+","+str(sn)+",network"))
+    sprite = Npc().create_npc(session,(None, str(nm)+","+str(tile_pos_x)+","+str(tile_pos_y)+","+str(sn)+",network"))
     sprite.isplayer = True
     sprite.final_move_dest = sprite.tile_pos
     sprite.interactions = ["TRADE", "DUEL"]
@@ -871,7 +871,7 @@ def populate_client(cuuid, event_data, game, registry):
     return sprite
 
 
-def update_client(sprite, char_dict, game):
+def update_client(sprite, char_dict, session):
     """Corrects character location when it changes map or loses sync.
 
     :param sprite: Local NPC sprite stored in the registry.

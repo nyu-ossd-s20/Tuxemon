@@ -113,8 +113,8 @@ class TuxemonConfig(object):
         self.debug_level = cfg.get("logging", "debug_level")
 
         # input config (None means use default for the platform)
-        self.gamepad_deadzone = .25
-        self.gamepad_button_map = None
+        self.sessionpad_deadzone = .25
+        self.sessionpad_button_map = None
         self.keyboard_button_map = None
 
         # not configurable from the file yet

@@ -44,7 +44,7 @@ class ModifyNpcAttributeAction(EventAction):
     ]
 
     def start(self):
-        world = self.game.get_state_name("WorldState")
+        world = self.session.get_state_name("WorldState")
         if not world:
             return
 

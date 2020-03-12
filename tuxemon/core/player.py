@@ -48,4 +48,4 @@ class Player(NPC):
         self.isplayer = True
 
         # Game variables for use with events
-        self.game_variables = {}
+        self.session_variables = {}

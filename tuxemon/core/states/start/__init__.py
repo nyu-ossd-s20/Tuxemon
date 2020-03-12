@@ -77,30 +77,30 @@ class StartState(PopUpMenu):
         super(StartState, self).startup(*args, **kwargs)
 
         def change_state(state, **change_state_kwargs):
-            return partial(self.game.push_state, state, **change_state_kwargs)
+            return partial(self.session.push_state, state, **change_state_kwargs)
 
         def set_player_name(text):
-            world = self.game.get_state_name("WorldState")
+            world = self.session.get_state_name("WorldState")
             world.player1.name = text
 
         def new_game():
             # load the starting map
-            state = self.game.replace_state("WorldState")
+            state = self.session.replace_state("WorldState")
             map_name = prepare.fetch("maps", prepare.CONFIG.starting_map)
             state.change_map(map_name)
-            self.game.push_state(
+            self.session.push_state(
                 state_name="InputMenu",
                 prompt=T.translate("input_name"),
                 callback=set_player_name,
                 escape_key_exits=False,
             )
-            self.game.push_state("FadeInTransition")
+            self.session.push_state("FadeInTransition")
 
         def options():
             pass
 
         def exit_game():
-            self.game.exit = True
+            self.session.exit = True
 
         menu_items_map = (
             ('menu_new_game', new_game),

@@ -32,7 +32,7 @@ class CombatStartedCondition(EventCondition):
     """
     name = "combat_started"
 
-    def test(self, game, condition):
+    def test(self, session,  condition):
         """ Checks to see if combat has been started or not.
 
             :param game: The main game object that contains all the game's variables.

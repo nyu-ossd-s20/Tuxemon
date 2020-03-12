@@ -113,7 +113,7 @@ class NPC(Entity):
 
         # general
         self.behavior = "wander"  # not used for now
-        self.game_variables = {}  # Tracks the game state
+        self.session_variables = {}  # Tracks the game state
         self.interactions = []  # List of ways player can interact with the Npc
         self.isplayer = False  # used for various tests, idk
         self.monsters = []  # This is a list of tuxemon the npc has
@@ -169,7 +169,7 @@ class NPC(Entity):
         return {
             'current_map': game.get_map_name(),
             'facing': self.facing,
-            'game_variables': self.game_variables,
+            'game_variables': self.session_variables,
             'inventory': encode_inventory(self.inventory),
             'monsters': encode_monsters(self.monsters),
             'player_name': self.name,
@@ -180,7 +180,7 @@ class NPC(Entity):
             'tile_pos': nearest(self.tile_pos),
         }
 
-    def set_state(self, game, save_data):
+    def set_state(self, session,  save_data):
         """Recreates npc from saved data
 
         :param game:
@@ -193,12 +193,12 @@ class NPC(Entity):
         """
 
         self.facing = save_data.get('facing', 'down')
-        self.game_variables = save_data['game_variables']
-        self.inventory = decode_inventory(game, self, save_data)
+        self.session_variables = save_data['game_variables']
+        self.inventory = decode_inventory(session, self, save_data)
         self.monsters = decode_monsters(save_data)
         self.name = save_data['player_name']
         self.storage = {
-            'items': decode_inventory(game, self, save_data['storage']),
+            'items': decode_inventory(session, self, save_data['storage']),
             'monsters': decode_monsters(save_data['storage']),
         }
 
@@ -630,16 +630,16 @@ class NPC(Entity):
                 level_highest = npc_monster.level
             level_average += npc_monster.level
         level_average = int(round(level_average / len(self.monsters)))
-        self.game_variables['party_level_lowest'] = level_lowest
-        self.game_variables['party_level_highest'] = level_highest
-        self.game_variables['party_level_average'] = level_average
+        self.session_variables['party_level_lowest'] = level_lowest
+        self.session_variables['party_level_highest'] = level_highest
+        self.session_variables['party_level_average'] = level_average
 
-    def give_item(self, game, target, item, quantity):
-        subtract = self.alter_item_quantity(game, item.slug, -quantity)
-        give = target.alter_item_quantity(game, item.slug, quantity)
+    def give_item(self, session,  target, item, quantity):
+        subtract = self.alter_item_quantity(session, item.slug, -quantity)
+        give = target.alter_item_quantity(session, item.slug, quantity)
         return subtract and give
 
-    def alter_item_quantity(self, game, item_slug, amount):
+    def alter_item_quantity(self, session,  item_slug, amount):
         success = True
         item = self.inventory.get(item_slug)
         if amount > 0:
@@ -647,7 +647,7 @@ class NPC(Entity):
                 item['quantity'] += amount
             else:
                 self.inventory[item_slug] = {
-                    'item': Item(game, self, item_slug),
+                    'item': Item(session, self, item_slug),
                     'quantity': amount,
                 }
         elif amount < 0:

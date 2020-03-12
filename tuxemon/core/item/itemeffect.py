@@ -89,14 +89,14 @@ class ItemEffect(object):
     valid_parameters = list()
     _param_factory = None
 
-    def __init__(self, game, user: NPC, parameters):
+    def __init__(self, session,  user: NPC, parameters):
         """
 
         :type user: NPC
         :type parameters: list
         """
 
-        self.game = game
+        self.session = game
         self.user = user
 
         # TODO: METACLASS

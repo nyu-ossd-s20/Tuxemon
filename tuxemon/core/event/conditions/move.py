@@ -32,7 +32,7 @@ class TrueCondition(EventCondition):
     """
     name = "true"
 
-    def test(self, game, condition):
+    def test(self, session,  condition):
         """ This function always returns true unless the operator is set to "is_not"
 
         :param game: The main game object that contains all the game's variables.

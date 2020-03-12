@@ -32,7 +32,7 @@ class SaveMenuState(PopUpMenu):
 
     def initialize_items(self):
         empty_image = None
-        rect = self.game.screen.get_rect()
+        rect = self.session.screen.get_rect()
         slot_rect = Rect(0, 0, rect.width * 0.80, rect.height // 6)
         for i in range(self.number_of_slots):
             # Check to see if a save exists for the current slot
@@ -92,7 +92,7 @@ class SaveMenuState(PopUpMenu):
         logger.info("Saving!")
         try:
             save_data = save.get_save_data(
-                self.game,
+                self.session,
             )
             save.save(
                 save_data,
@@ -102,9 +102,9 @@ class SaveMenuState(PopUpMenu):
         except Exception as e:
             logger.error("Unable to save game!!")
             logger.error(e)
-            open_dialog(self.game, [T.translate('save_failure')])
+            open_dialog(self.session, [T.translate('save_failure')])
         else:
-            open_dialog(self.game, [T.translate('save_success')])
+            open_dialog(self.session, [T.translate('save_success')])
 
-        self.game.pop_state(self)
+        self.session.pop_state(self)
 

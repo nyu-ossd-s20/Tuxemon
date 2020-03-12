@@ -32,7 +32,7 @@ class DialogOpenCondition(EventCondition):
     """
     name = "dialog_open"
 
-    def test(self, game, condition):
+    def test(self, session,  condition):
         """ Checks to see if a dialog window is open.
 
         :param game: The main game object that contains all the game's variables.

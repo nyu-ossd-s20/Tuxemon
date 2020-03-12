@@ -50,8 +50,8 @@ class StartPseudoBattleAction(EventAction):
             return False
 
         # Stop movement and keypress on the server.
-        if self.game.isclient or self.game.ishost:
-            self.game.client.update_player(player.facing, event_type="CLIENT_START_BATTLE")
+        if self.session.isclient or self.session.ishost:
+            self.session.client.update_player(player.facing, event_type="CLIENT_START_BATTLE")
 
         # Lookup the environment
         env_slug = "grass"
@@ -60,10 +60,10 @@ class StartPseudoBattleAction(EventAction):
         env = db.lookup(env_slug, table="environment")
 
         # Add our players and setup combat
-        self.game.push_state("CombatState", players=(player, npc), combat_type="trainer", graphics=env['battle_graphics'])
+        self.session.push_state("CombatState", players=(player, npc), combat_type="trainer", graphics=env['battle_graphics'])
 
         # flash the screen
-        self.game.push_state("FlashTransition")
+        self.session.push_state("FlashTransition")
 
         # Start some music!
         logger.info("Playing battle music!")

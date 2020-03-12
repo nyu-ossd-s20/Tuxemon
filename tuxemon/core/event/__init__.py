@@ -71,7 +71,7 @@ __all__ = [
 ]
 
 
-def get_npc(game, slug):
+def get_npc(session, slug):
     """ Gets an NPC object by slug.
 
     :param game: The main game object that contains all the game's variables.
@@ -84,7 +84,7 @@ def get_npc(game, slug):
     :returns: The NPC object or None if the NPC is not found.
     """
     if slug == "player":
-        return game.player1
+        return session.player
 
     # Loop through the NPC list and see if the slug matches any in the list
     world = game.get_state_name("WorldState")

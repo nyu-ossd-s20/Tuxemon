@@ -71,8 +71,8 @@ class RandomEncounterAction(EventAction):
             logger.info("Starting random encounter!")
 
             # Stop movement and keypress on the server.
-            if self.game.isclient or self.game.ishost:
-                self.game.client.update_player(player.facing, event_type="CLIENT_START_BATTLE")
+            if self.session.isclient or self.session.ishost:
+                self.session.client.update_player(player.facing, event_type="CLIENT_START_BATTLE")
 
             npc = _create_monster_npc(encounter)
 
@@ -84,22 +84,22 @@ class RandomEncounterAction(EventAction):
 
             # Add our players and setup combat
             # "queueing" it will mean it starts after the top of the stack is popped (or replaced)
-            self.game.queue_state("CombatState", players=(player, npc), combat_type="monster", graphics=env['battle_graphics'])
+            self.session.queue_state("CombatState", players=(player, npc), combat_type="monster", graphics=env['battle_graphics'])
 
             # stop the player
-            world = self.game.get_state_name("WorldState")
+            world = self.session.get_state_name("WorldState")
             world.lock_controls()
             world.stop_player()
 
             # flash the screen
-            self.game.push_state("FlashTransition")
+            self.session.push_state("FlashTransition")
 
             # Start some music!
             filename = env['battle_music']
-            self.game.event_engine.execute_action("play_music", [filename])
+            self.session.event_engine.execute_action("play_music", [filename])
 
     def update(self):
-        if self.game.get_state_name("CombatState") is None:
+        if self.session.get_state_name("CombatState") is None:
             self.stop()
 
 

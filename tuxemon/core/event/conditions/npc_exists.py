@@ -33,7 +33,7 @@ class NPCExistsCondition(EventCondition):
     """
     name = "npc_exists"
 
-    def test(self, game, condition):
+    def test(self, session,  condition):
         """ Checks to see if a particular NPC object exists in the current list of NPCs.
 
         :param game: The main game object that contains all the game's variables.
@@ -68,7 +68,7 @@ class NPCExistsCondition(EventCondition):
         if not world:
             return
 
-        if get_npc(game, condition.parameters[0]):
+        if get_npc(session, condition.parameters[0]):
             return True
         else:
             return False
