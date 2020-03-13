@@ -54,7 +54,7 @@ class TeleportAction(EventAction):
     ]
 
     def start(self):
-        # Get the player and map from the game
+        # Get the player and map from the session
         player = self.session.player
         world = self.session.control.get_state_name("WorldState")
         map_name = self.parameters.map_name

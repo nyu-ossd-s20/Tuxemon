@@ -59,7 +59,7 @@ class HasItemCondition(EventCondition):
     def test(self, session,  condition):
         """ Checks to see the player is has a monster in his party
 
-        :type game: core.control.Control
+        :type session: core.control.Control
         :type condition: Dictionary
 
         :rtype: Boolean

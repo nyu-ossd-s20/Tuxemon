@@ -28,13 +28,13 @@ from tuxemon.core.event.eventaction import EventAction
 
 
 class QuitAction(EventAction):
-    """Completely quit the game
+    """Completely quit the session
     """
     name = "quit"
     valid_parameters = []
 
     def start(self):
         # TODO: API
-        self.session._wants_to_exit = True
-        self.session.exit = True
-        self.session.done = True
+        self.session.control._wants_to_exit = True
+        self.session.control.exit = True
+        self.session.control.done = True

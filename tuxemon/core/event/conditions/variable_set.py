@@ -28,22 +28,22 @@ from tuxemon.core.event.eventcondition import EventCondition
 
 
 class VariableSetCondition(EventCondition):
-    """ Checks to see if a player game variable has been set. This will look for a particular
+    """ Checks to see if a player session variable has been set. This will look for a particular
     key in the player.game_variables dictionary and see if it exists. If it exists, it will
     return true.
     """
     name = "variable_set"
 
     def test(self, session,  condition):
-        """ Checks to see if a player game variable has been set. This will look for a particular
+        """ Checks to see if a player session variable has been set. This will look for a particular
         key in the player.game_variables dictionary and see if it exists. If it exists, it will
         return true.
 
-        :param game: The main game object that contains all the game's variables.
+        :param session: The main session object that contains all the session's variables.
         :param condition: A dictionary of condition details. See :py:func:`core.map.Map.loadevents`
             for the format of the dictionary.
 
-        :type game: core.control.Control
+        :type session: core.control.Control
         :type condition: Dictionary
 
         :rtype: Boolean
@@ -68,7 +68,7 @@ class VariableSetCondition(EventCondition):
         }
 
         """
-        # Get the player object from the game.
+        # Get the player object from the session.
         player = session.player
 
         # Split the string by ":" into a list

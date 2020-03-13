@@ -57,7 +57,7 @@ class PlayMusicAction(EventAction):
             logger.error('unable to play music')
 
         # Keep track of what song we're currently playing
-        if self.session.current_music["song"]:
-            self.session.current_music["previoussong"] = self.session.current_music["song"]
-        self.session.current_music["status"] = "playing"
-        self.session.current_music["song"] = filename
+        if self.session.control.current_music["song"]:
+            self.session.control.current_music["previoussong"] = self.session.control.current_music["song"]
+        self.session.control.current_music["status"] = "playing"
+        self.session.control.current_music["song"] = filename

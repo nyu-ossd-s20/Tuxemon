@@ -32,22 +32,22 @@ logger = logging.getLogger(__name__)
 
 
 class VariableIsCondition(EventCondition):
-    """ Checks to see if a player game variable has been set. This will look for a particular
+    """ Checks to see if a player session variable has been set. This will look for a particular
     key in the player.game_variables dictionary and see if it exists. If it exists, it will
     return true.
     """
     name = "variable_is"
 
     def test(self, session,  condition):
-        """ Checks to see if a player game variable meets a given condition. This will look
+        """ Checks to see if a player session variable meets a given condition. This will look
         for a particular key in the player.game_variables dictionary and see if it exists.
         If it exists, it will return true if the variable is greater than the value.
 
-        :param game: The main game object that contains all the game's variables.
+        :param session: The main session object that contains all the session's variables.
         :param condition: A dictionary of condition details. See :py:func:`core.map.Map.loadevents`
         for the format of the dictionary.
 
-        :type game: core.control.Control
+        :type session: core.control.Control
         :type condition: Dictionary
 
         :rtype: Boolean
@@ -55,7 +55,7 @@ class VariableIsCondition(EventCondition):
 
         Valid Parameters: variable_name, operation, value
         """
-        # Get the player object from the game.
+        # Get the player object from the session.
         player = session.player
 
         # Read the parameters

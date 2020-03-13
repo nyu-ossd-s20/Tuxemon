@@ -94,7 +94,7 @@ class ItemCondition(object):
         :type parameters: list
         """
 
-        self.session = game
+        self.session = session
         self.user = user
         self.context = context
 

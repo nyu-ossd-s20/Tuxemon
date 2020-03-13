@@ -137,18 +137,18 @@ def calc_dialog_rect(screen_rect):
     return rect
 
 
-def open_dialog(session, text, avatar=None, menu=None):
+def open_dialog(control, text, avatar=None, menu=None):
     """ Open a dialog with the standard window size
 
-    :param game:
+    :param tuxemon.core.control.Control control: Game client
     :param text: list of strings
     :param avatar: optional avatar sprite
     :param menu: optional menu object
 
     :rtype: core.states.dialog.DialogState
     """
-    rect = calc_dialog_rect(game.screen.get_rect())
-    return game.push_state("DialogState", text=text, avatar=avatar, rect=rect, menu=menu)
+    rect = calc_dialog_rect(control.screen.get_rect())
+    return control.push_state("DialogState", text=text, avatar=avatar, rect=rect, menu=menu)
 
 
 def nearest(l):

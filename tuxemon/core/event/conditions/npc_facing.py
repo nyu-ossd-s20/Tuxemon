@@ -36,11 +36,11 @@ class NPCFacingCondition(EventCondition):
     def test(self, session,  condition):
         """ Checks to see where an NPC is facing
 
-        :param game: The main game object that contains all the game's variables.
+        :param session: The main session object that contains all the session's variables.
         :param condition: A dictionary of condition details. See :py:func:`core.map.Map.loadevents`
             for the format of the dictionary.
 
-        :type game: core.control.Control
+        :type session: core.control.Control
         :type condition: Dictionary
 
         :rtype: Boolean
@@ -65,7 +65,7 @@ class NPCFacingCondition(EventCondition):
             ...
         }
         """
-        # Get the player object from the game.
+        # Get the player object from the session.
         player = get_npc(session, condition.parameters[0])
         if not player:
             return False

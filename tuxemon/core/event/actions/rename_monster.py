@@ -59,7 +59,7 @@ class RenameMonsterAction(EventAction):
         self.session.control.get_state_name("MonsterMenuState").refresh_menu_items()
 
     def prompt_for_name(self, menu_item):
-        self.monster = menu_item.game_object
+        self.monster = menu_item.game_objectobject
 
         self.session.control.push_state(
             state_name="InputMenu",

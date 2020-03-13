@@ -34,7 +34,7 @@ from tuxemon.core.event.eventaction import EventAction
 logger = logging.getLogger(__name__)
 
 class CreateNpcAction(EventAction):
-    """Creates an NPC object and adds it to the game's current list of NPC's.
+    """Creates an NPC object and adds it to the session's current list of NPC's.
 
     Valid Parameters: slug, tile_pos_x, tile_pos_y, animations, behavior
     """
@@ -83,5 +83,5 @@ class CreateNpcAction(EventAction):
         npc.behavior = behavior
         npc.ai = ai.AI()
 
-        # Add the NPC to the game's NPC list
+        # Add the NPC to the session's NPC list
         world.add_entity(npc)

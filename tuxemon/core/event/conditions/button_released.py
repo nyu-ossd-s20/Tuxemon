@@ -35,11 +35,11 @@ class ButtonReleasedCondition(EventCondition):
     def test(self, session,  condition):
         """ Checks to see if a particular key was released
 
-        :param game: The main game object that contains all the game's variables.
+        :param session: The main session object that contains all the session's variables.
         :param condition: A dictionary of condition details. See :py:func:`core.map.Map.loadevents`
             for the format of the dictionary.
 
-        :type game: core.control.Control
+        :type session: core.control.Control
         :type condition: Dictionary
 
         :rtype: Boolean
@@ -66,8 +66,8 @@ class ButtonReleasedCondition(EventCondition):
         # no longer in use
         # TODO: Cleanup or remove this action
         raise NotImplementedError
-        # # Get the keys pressed from the game.
-        # events = game.key_events
+        # # Get the keys pressed from the session.
+        # events = session.control.key_events
         # button = str(condition.parameters[0])
         #
         # # Loop through each event

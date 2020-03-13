@@ -75,7 +75,7 @@ class TranslatedDialogAction(EventAction):
 
         self.open_dialog(
             process_translate_text(
-                self.session,
+                self.session.control,
                 key,
                 replace,
             ), avatar
@@ -87,4 +87,4 @@ class TranslatedDialogAction(EventAction):
 
     def open_dialog(self, pages, avatar):
         logger.info("Opening dialog window")
-        open_dialog(self.session, pages, avatar)
+        open_dialog(self.session.control, pages, avatar)

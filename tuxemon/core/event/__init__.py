@@ -74,10 +74,10 @@ __all__ = [
 def get_npc(session, slug):
     """ Gets an NPC object by slug.
 
-    :param game: The main game object that contains all the game's variables.
+    :param session: The main session object that contains all the session's variables.
     :param slug: The slug of the NPC that exists on the current map.
 
-    :type game: core.control.Control
+    :type session: core.control.Control
     :type slug: str
 
     :rtype: tuxemon.core.player.Player
@@ -87,7 +87,7 @@ def get_npc(session, slug):
         return session.player
 
     # Loop through the NPC list and see if the slug matches any in the list
-    world = game.get_state_name("WorldState")
+    world = session.control.get_state_name("WorldState")
     if world is None:
         logger.error("Cannot search for NPC if world doesn't exist: " + slug)
         return

@@ -100,6 +100,7 @@ class SaveMenuState(PopUpMenu):
             )
             save.slot_number = self.selected_index
         except Exception as e:
+            raise
             logger.error("Unable to save game!!")
             logger.error(e)
             open_dialog(self.control, [T.translate('save_failure')])

@@ -84,7 +84,7 @@ class RandomEncounterAction(EventAction):
 
             # Add our players and setup combat
             # "queueing" it will mean it starts after the top of the stack is popped (or replaced)
-            self.session.queue_state("CombatState", players=(player, npc), combat_type="monster", graphics=env['battle_graphics'])
+            self.session.control.queue_state("CombatState", players=(player, npc), combat_type="monster", graphics=env['battle_graphics'])
 
             # stop the player
             world = self.session.control.get_state_name("WorldState")
@@ -96,7 +96,7 @@ class RandomEncounterAction(EventAction):
 
             # Start some music!
             filename = env['battle_music']
-            self.session.event_engine.execute_action("play_music", [filename])
+            self.session.control.event_engine.execute_action("play_music", [filename])
 
     def update(self):
         if self.session.control.get_state_name("CombatState") is None:

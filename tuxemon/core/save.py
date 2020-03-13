@@ -55,18 +55,17 @@ slot_number = None
 TIME_FORMAT = "%Y-%m-%d %H:%M"
 
 
-def get_save_data(game):
+def get_save_data(control):
     """Gets a dictionary which represents the state of the game.
 
-    :param game: The core.control.Control object that runs the game.
-    :type game: core.control.Control
+    :param tuxemon.core.control.Control control: Game client
 
     :rtype: Dictionary
     :returns: Game data to save, must be JSON encodable.
 
     """
-    save_data = session.player.get_state(game)
-    screenshot = capture_screenshot(game)
+    save_data = control.player.get_state(control)
+    screenshot = capture_screenshot(control)
     save_data['screenshot'] = base64.b64encode(pygame.image.tostring(screenshot, "RGB")).decode('utf-8')
     save_data['screenshot_width'] = screenshot.get_width()
     save_data['screenshot_height'] = screenshot.get_height()
@@ -75,9 +74,12 @@ def get_save_data(game):
     return save_data
 
 
-def capture_screenshot(game):
-    screenshot = pygame.Surface(game.screen.get_size())
-    world = game.get_state_name("WorldState")
+def capture_screenshot(control):
+    """
+    :type control: tuxemon.core.control.Control
+    """
+    screenshot = pygame.Surface(control.screen.get_size())
+    world = control.get_state_name("WorldState")
     world.draw(screenshot)
     return screenshot
 

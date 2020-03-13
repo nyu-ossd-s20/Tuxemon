@@ -39,6 +39,7 @@ from tuxemon.core import prepare
 from tuxemon.core.platform.platform_pygame.events import PygameEventQueueHandler
 from tuxemon.core import cli, networking, rumble
 from tuxemon.core.platform import android
+from tuxemon.core.session import local_session
 from tuxemon.core.state import StateManager
 
 logger = logging.getLogger(__name__)
@@ -98,7 +99,7 @@ class Control(StateManager):
 
         # Set up our game's event engine which executes actions based on
         # conditions defined in map files.
-        self.event_engine = tuxemon.core.event.eventengine.EventEngine(self)
+        self.event_engine = tuxemon.core.event.eventengine.EventEngine(local_session)
         self.event_conditions = {}
         self.event_actions = {}
         self.event_persist = {}

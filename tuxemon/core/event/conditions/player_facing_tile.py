@@ -39,11 +39,11 @@ class PlayerFacingTileCondition(EventCondition):
     def test(self, session,  condition):
         """Checks to see the player is facing a tile position
 
-        :param game: The main game object that contains all the game's variables.
+        :param session: The main session object that contains all the session's variables.
         :param condition: A dictionary of condition details. See :py:func:`core.map.Map.loadevents`
             for the format of the dictionary.
 
-        :type game: core.control.Control
+        :type session: core.control.Control
         :type condition: Dictionary
 
         :rtype: Boolean

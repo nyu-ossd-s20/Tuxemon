@@ -38,10 +38,10 @@ class ToTalkCondition(EventCondition):
     def test(self, session,  condition):
         """ Checks to see the player is next to and facing a particular NPC and that the Return button is pressed.
 
-        :param game: The main game object that contains all the game's variables.
+        :param session: The main session object that contains all the session's variables.
         :param condition: The condition details.
 
-        :type game: core.control.Control
+        :type session: core.control.Control
         :type condition: NamedTuple
 
         :rtype: Boolean
@@ -66,7 +66,7 @@ class ToTalkCondition(EventCondition):
         """
         player_next_to_and_facing_target = PlayerFacingNPCCondition().test(session, condition)
         button_pressed = ButtonPressedCondition().test(
-            game,
+            session,
             MapCondition(
                 type="button_pressed",
                 parameters=[

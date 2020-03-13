@@ -53,7 +53,7 @@ class NpcWanderAction(EventAction):
 
             # Suspend wandering if a dialog window is open
             # TODO: this should only be done for the NPC the player is conversing with, not everyone
-            for state in self.session.active_states:
+            for state in self.session.control.active_states:
                 if state.name == "DialogState":
                     return
 

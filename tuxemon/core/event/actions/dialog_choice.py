@@ -69,4 +69,4 @@ class DialogChoiceAction(EventAction):
 
     def open_choice_dialog(self, session,  menu):
         logger.info("Opening choice window")
-        return game.push_state("ChoiceState", menu=menu)
+        return session.control.push_state("ChoiceState", menu=menu)

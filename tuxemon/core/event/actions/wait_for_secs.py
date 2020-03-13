@@ -52,5 +52,5 @@ class WaitForSecsAction(EventAction):
 
     def start(self):
         secs = self.parameters.seconds
-        self.session.event_engine.state = "waiting"
-        self.session.event_engine.wait = secs
+        self.session.control.event_engine.state = "waiting"
+        self.session.control.event_engine.wait = secs

@@ -36,6 +36,7 @@ import logging
 from tuxemon.core import prepare
 from tuxemon.core import log
 from tuxemon.core.player import Player
+from tuxemon.core.session import local_session
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +64,10 @@ def main(load_slot=None):
     # load the player npc
     new_player = Player(prepare.CONFIG.player_npc)
     control.add_player(new_player)
+
+    # WIP.  Will be more complete with client-view
+    local_session.control = control
+    local_session.player = new_player
 
     # background state is used to prevent other states from
     # being required to track dirty screen areas.  for example,

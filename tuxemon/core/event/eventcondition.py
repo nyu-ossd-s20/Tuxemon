@@ -54,17 +54,17 @@ class EventCondition(object):
         """ Return dictionary for this event class's data
 
         * This dictionary will be shared across all conditions
-        * This dictionary will be saved when game is saved
+        * This dictionary will be saved when session is saved
 
         :return:
         """
         # Create a dictionary that will track movement
 
         try:
-            return session.event_persist[self.name]
+            return session.control.event_persist[self.name]
         except KeyError:
             persist = dict()
-            session.event_persist[self.name] = persist
+            session.control.event_persist[self.name] = persist
             return persist
 
     @property

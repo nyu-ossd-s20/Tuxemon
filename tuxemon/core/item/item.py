@@ -278,7 +278,7 @@ class Item(object):
 def decode_inventory(session, owner, data):
     """ Reconstruct inventory from save_data
 
-    :param game:
+    :param session:
     :param owner:
     :param data: save data
     :type data: Dictionary

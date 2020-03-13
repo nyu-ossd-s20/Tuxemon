@@ -113,7 +113,7 @@ class NPC(Entity):
 
         # general
         self.behavior = "wander"  # not used for now
-        self.session_variables = {}  # Tracks the game state
+        self.game_variables = {}  # Tracks the game state
         self.interactions = []  # List of ways player can interact with the Npc
         self.isplayer = False  # used for various tests, idk
         self.monsters = []  # This is a list of tuxemon the npc has
@@ -169,7 +169,7 @@ class NPC(Entity):
         return {
             'current_map': game.get_map_name(),
             'facing': self.facing,
-            'game_variables': self.session_variables,
+            'game_variables': self.game_variables,
             'inventory': encode_inventory(self.inventory),
             'monsters': encode_monsters(self.monsters),
             'player_name': self.name,
@@ -193,7 +193,7 @@ class NPC(Entity):
         """
 
         self.facing = save_data.get('facing', 'down')
-        self.session_variables = save_data['game_variables']
+        self.game_variables = save_data['game_variables']
         self.inventory = decode_inventory(session, self, save_data)
         self.monsters = decode_monsters(save_data)
         self.name = save_data['player_name']
@@ -463,7 +463,7 @@ class NPC(Entity):
             # eventually, there will need to be a global clock for the game,
             # not based on wall time, to prevent visual glitches.
             self.moveConductor.play()
-            self.network_notify_start_moving(direction)
+            # self.network_notify_start_moving(direction)
             self.path_origin = tuple(self.tile_pos)
             self.velocity3 = self.moverate * dirs3[direction]
         else:
@@ -631,9 +631,9 @@ class NPC(Entity):
                 level_highest = npc_monster.level
             level_average += npc_monster.level
         level_average = int(round(level_average / len(self.monsters)))
-        self.session_variables['party_level_lowest'] = level_lowest
-        self.session_variables['party_level_highest'] = level_highest
-        self.session_variables['party_level_average'] = level_average
+        self.game_variables['party_level_lowest'] = level_lowest
+        self.game_variables['party_level_highest'] = level_highest
+        self.game_variables['party_level_average'] = level_average
 
     def give_item(self, session,  target, item, quantity):
         subtract = self.alter_item_quantity(session, item.slug, -quantity)

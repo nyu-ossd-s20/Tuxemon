@@ -96,7 +96,7 @@ class ItemEffect(object):
         :type parameters: list
         """
 
-        self.session = game
+        self.session = session
         self.user = user
 
         # TODO: METACLASS

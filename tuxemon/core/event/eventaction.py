@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
 
 
 class EventAction(object):
-    """ EventActions are executed during gameplay.
+    """ EventActions are executed during sessionplay.
 
     EventAction subclasses implement "actions" defined in Tuxemon maps.
     All subclasses, at minimum, must implement the following:
@@ -69,7 +69,7 @@ class EventAction(object):
     The EventAction class supports the context protocol, and you may
     also use them outside of the EventEngine, but can only be run
     in a blocking manner.  Do not execute EventActions outside the Engine
-    if the action will block forever, as it will freeze the game.
+    if the action will block forever, as it will freeze the session.
 
 
     Parameters
@@ -169,7 +169,7 @@ class EventAction(object):
     def execute(self):
         """ Blocking call to run the action.  Will setup and cleanup action.
 
-        This may cause the game to hang if an action is waiting on game changes
+        This may cause the session to hang if an action is waiting on session changes
 
         :return:
         """
@@ -181,7 +181,7 @@ class EventAction(object):
 
         It is better to use EventAction.execute()
 
-        This may cause the game to hang if an action is waiting on game changes
+        This may cause the session to hang if an action is waiting on session changes
 
         :return:
         """

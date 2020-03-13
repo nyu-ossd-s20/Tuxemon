@@ -34,7 +34,7 @@ class StartCinemaModeAction(EventAction):
     valid_parameters = []
 
     def start(self):
-        world = self.session.current_state
+        world = self.session.control.current_state
 
         if world.cinema_state == "off":
             world.cinema_state = "turning on"

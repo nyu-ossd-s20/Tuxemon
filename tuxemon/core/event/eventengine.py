@@ -43,7 +43,7 @@ logger = logging.getLogger(__name__)
 
 
 class RunningEvent(object):
-    """ Manage MapEvents that are used during gameplay
+    """ Manage MapEvents that are used during sessionplay
 
     Running events are considered to have all conditions satisfied
     Once started, they will eventually execute all actions of the MapEvent
@@ -98,8 +98,8 @@ class EventEngine(object):
 
     """
 
-    def __init__(self, game):
-        self.session = game
+    def __init__(self, session):
+        self.session = session
 
         self.conditions = dict()
         self.actions = dict()
@@ -199,7 +199,7 @@ class EventEngine(object):
     def execute_action(self, action_name, parameters=None):
         """ Load and execute an action
 
-        This will cause the game to hang if an action waits on game changes
+        This will cause the session to hang if an action waits on session changes
 
         :type action_name: str
         :type parameters: tuple
@@ -231,7 +231,7 @@ class EventEngine(object):
 
         """
         # the event id is used to make sure multiple copies of the same event are not
-        # started.  If not checked, then the game would freeze while it tries to run
+        # started.  If not checked, then the session would freeze while it tries to run
         # unlimited copies of the same event, forever.
         if map_event.id not in self.running_events:
             logger.debug("starting map event: {}".format(map_event))
@@ -306,12 +306,12 @@ class EventEngine(object):
         # do the "init" events.  this will be done just once
         # TODO: find solution that doesn't nuke the init list
         # TODO: make event engine generic, so can be used in global scope, not just maps
-        if self.session.inits:
-            self.process_map_events(self.session.inits)
-            self.session.inits = list()
+        if self.session.control.inits:
+            self.process_map_events(self.session.control.inits)
+            self.session.control.inits = list()
 
         # process any other events
-        self.process_map_events(self.session.events)
+        self.process_map_events(self.session.control.events)
 
     def update_running_events(self, dt):
         """ Update the events that are running
@@ -408,24 +408,24 @@ class EventEngine(object):
         """
         # has the player pressed the action key?
         if event.pressed and event.button == buttons.A:
-            for map_event in self.session.interacts:
+            for map_event in self.session.control.interacts:
                 self.process_map_event(map_event)
 
         return event
 
 
 @contextmanager
-def add_error_context(event, item, game):
+def add_error_context(event, item, session):
     """
     :type event: core.event.EventObject
     :type item: core.event.MapCondition or core.event.MapAction
-    :type game: core.control.Control
+    :type session: core.control.Control
     :rtype None
     """
     try:
         yield
     except Exception:
-        file_name = game.get_map_filepath()
+        file_name = session.control.get_map_filepath()
         tree = etree.parse(file_name)
         event_node = tree.find("//object[@id='%s']" % event.id)
         if item.name is None:

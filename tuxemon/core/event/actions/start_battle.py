@@ -69,10 +69,6 @@ class StartBattleAction(EventAction):
         if not world:
             return False
 
-        # Stop movement and keypress on the server.
-        if self.session.isclient or self.session.ishost:
-            self.session.client.update_player(player.facing, event_type="CLIENT_START_BATTLE")
-
         npc = world.get_entity(self.parameters.npc_slug)
         npc.load_party()
 
@@ -88,7 +84,7 @@ class StartBattleAction(EventAction):
 
         # Start some music!
         filename = env['battle_music']
-        self.session.event_engine.execute_action("play_music", [filename])
+        self.session.control.event_engine.execute_action("play_music", [filename])
 
     def update(self):
         if self.session.control.get_state_name("CombatState") is None:

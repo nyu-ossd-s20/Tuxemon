@@ -55,7 +55,7 @@ class TranslatedDialogChoiceAction(EventAction):
         # perform text substitutions
         choices = replace_text(self.session, self.parameters.choices)
 
-        # Get the player object from the game
+        # Get the player object from the session
         player = get_npc(self.session, "player")
 
         # make menu options for each string between the colons
@@ -74,4 +74,4 @@ class TranslatedDialogChoiceAction(EventAction):
 
     def open_choice_dialog(self, session,  menu):
         logger.info("Opening choice window")
-        return game.push_state("ChoiceState", menu=menu)
+        return session.control.push_state("ChoiceState", menu=menu)

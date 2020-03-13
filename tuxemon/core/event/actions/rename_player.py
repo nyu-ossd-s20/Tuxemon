@@ -42,7 +42,7 @@ class RenamePlayerAction(EventAction):
 
 
     def set_player_name(menu, name):
-        world = menu.game.get_state_name("WorldState")
+        world = menu.session.control.get_state_name("WorldState")
         if world:
             world.player.name = name
 

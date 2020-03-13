@@ -322,8 +322,8 @@ class ControllerServer():
         controller_events = self.net_controller_loop()
         if controller_events:
             for controller_event in controller_events:
-                self.session.key_events.append(controller_event)
-                self.session.current_state.process_event(controller_event)
+                self.session.control.key_events.append(controller_event)
+                self.session.control.current_state.process_event(controller_event)
 
     def net_controller_loop(self):
         """Process all network events from controllers and pass them
@@ -339,40 +339,40 @@ class ControllerServer():
         events = []
         for event_data in self.network_events:
             if event_data == "KEYDOWN:up":
-                event = self.session.keyboard_events["KEYDOWN"]["up"]
+                event = self.session.control.keyboard_events["KEYDOWN"]["up"]
 
             elif event_data == "KEYUP:up":
-                event = self.session.keyboard_events["KEYUP"]["up"]
+                event = self.session.control.keyboard_events["KEYUP"]["up"]
 
             elif event_data == "KEYDOWN:down":
-                event = self.session.keyboard_events["KEYDOWN"]["down"]
+                event = self.session.control.keyboard_events["KEYDOWN"]["down"]
 
             elif event_data == "KEYUP:down":
-                event = self.session.keyboard_events["KEYUP"]["down"]
+                event = self.session.control.keyboard_events["KEYUP"]["down"]
 
             elif event_data == "KEYDOWN:left":
-                event = self.session.keyboard_events["KEYDOWN"]["left"]
+                event = self.session.control.keyboard_events["KEYDOWN"]["left"]
 
             elif event_data == "KEYUP:left":
-                event = self.session.keyboard_events["KEYUP"]["left"]
+                event = self.session.control.keyboard_events["KEYUP"]["left"]
 
             elif event_data == "KEYDOWN:right":
-                event = self.session.keyboard_events["KEYDOWN"]["right"]
+                event = self.session.control.keyboard_events["KEYDOWN"]["right"]
 
             elif event_data == "KEYUP:right":
-                event = self.session.keyboard_events["KEYUP"]["right"]
+                event = self.session.control.keyboard_events["KEYUP"]["right"]
 
             elif event_data == "KEYDOWN:enter":
-                event = self.session.keyboard_events["KEYDOWN"]["enter"]
+                event = self.session.control.keyboard_events["KEYDOWN"]["enter"]
 
             elif event_data == "KEYUP:enter":
-                event = self.session.keyboard_events["KEYUP"]["enter"]
+                event = self.session.control.keyboard_events["KEYUP"]["enter"]
 
             elif event_data == "KEYDOWN:esc":
-                event = self.session.keyboard_events["KEYDOWN"]["escape"]
+                event = self.session.control.keyboard_events["KEYDOWN"]["escape"]
 
             elif event_data == "KEYUP:esc":
-                event = self.session.keyboard_events["KEYUP"]["escape"]
+                event = self.session.control.keyboard_events["KEYUP"]["escape"]
 
             else:
                 logger.debug("Unknown network event: " +str(event_data))
@@ -612,7 +612,7 @@ class TuxemonClient():
         if not event_type in self.event_list:
             self.event_list[event_type] = 0
         pd = prepare.player.__dict__
-        map_name = self.session.get_map_name()
+        map_name = self.session.control.get_map_name()
         event_data = {"type": event_type,
                       "event_number": self.event_list[event_type],
                       "sprite_name": pd["sprite_name"],
@@ -647,7 +647,7 @@ class TuxemonClient():
         if not event_type in self.event_list:
             self.event_list[event_type] = 0
         pd = prepare.player.__dict__
-        map_name = self.session.get_map_name()
+        map_name = self.session.control.get_map_name()
         event_data = {"type": event_type,
                       "event_number": self.event_list[event_type],
                       "map_name": map_name,
@@ -671,7 +671,7 @@ class TuxemonClient():
         :returns: None
 
         """
-        if self.session.current_state != self.session.control.get_state_name("WorldState"):
+        if self.session.control.current_state != self.session.control.get_state_name("WorldState"):
             return False
 
         event_type = None
