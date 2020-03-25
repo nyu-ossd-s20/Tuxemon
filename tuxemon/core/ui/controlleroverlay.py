@@ -37,6 +37,7 @@ import logging
 
 import pygame
 
+from tuxemon.compat import Rect
 from tuxemon.core import graphics
 from tuxemon.core import screen
 
@@ -66,29 +67,29 @@ class ControllerOverlay(object):
 
         # Create the collision rectangle objects for the dpad so we can see if we're pressing a button
         self.dpad["rect"] = {}
-        self.dpad["rect"]["up"] = pygame.Rect(self.dpad["position"][0] + (self.dpad["surface"].get_width() / 3),
-                                              self.dpad["position"][1],  # Rectangle position_y
-                                              self.dpad["surface"].get_width() / 3,  # Rectangle size_x
-                                              self.dpad["surface"].get_height() / 2)  # Rectangle size_y
-        self.dpad["rect"]["down"] = pygame.Rect(self.dpad["position"][0] + (self.dpad["surface"].get_width() / 3),
-                                                self.dpad["position"][1] + (self.dpad["surface"].get_height() / 2),
-                                                self.dpad["surface"].get_width() / 3,
-                                                self.dpad["surface"].get_height() / 2)
-        self.dpad["rect"]["left"] = pygame.Rect(self.dpad["position"][0],
-                                                self.dpad["position"][1] + (self.dpad["surface"].get_height() / 3),
-                                                self.dpad["surface"].get_width() / 2,
-                                                self.dpad["surface"].get_height() / 3)
-        self.dpad["rect"]["right"] = pygame.Rect(self.dpad["position"][0] + (self.dpad["surface"].get_width() / 2),
-                                                 self.dpad["position"][1] + (self.dpad["surface"].get_height() / 3),
-                                                 self.dpad["surface"].get_width() / 2,
-                                                 self.dpad["surface"].get_height() / 3)
+        self.dpad["rect"]["up"] = Rect(self.dpad["position"][0] + (self.dpad["surface"].get_width() /3),
+            self.dpad["position"][1],                      # Rectangle position_y
+            self.dpad["surface"].get_width() /3,           # Rectangle size_x
+            self.dpad["surface"].get_height() /2)          # Rectangle size_y
+        self.dpad["rect"]["down"] = Rect(self.dpad["position"][0] + (self.dpad["surface"].get_width() /3),
+            self.dpad["position"][1] + (self.dpad["surface"].get_height() /2),
+            self.dpad["surface"].get_width() /3,
+            self.dpad["surface"].get_height() /2)
+        self.dpad["rect"]["left"] = Rect(self.dpad["position"][0],
+            self.dpad["position"][1] + (self.dpad["surface"].get_height() /3),
+            self.dpad["surface"].get_width() /2,
+            self.dpad["surface"].get_height() /3)
+        self.dpad["rect"]["right"] = Rect(self.dpad["position"][0] + (self.dpad["surface"].get_width() /2),
+            self.dpad["position"][1] + (self.dpad["surface"].get_height() /3),
+            self.dpad["surface"].get_width() /2,
+            self.dpad["surface"].get_height() /3)
 
         # Create the buttons
         self.a_button = {}
         self.a_button["surface"] = graphics.load_and_scale("gfx/a-button.png")
         self.a_button["position"] = (prepare.SCREEN_SIZE[0] - int( self.a_button["surface"].get_width() * 1.0 ),
             (self.dpad["position"][1] + (self.dpad["surface"].get_height() / 2) - (self.a_button["surface"].get_height() / 2)))
-        self.a_button["rect"] = pygame.Rect(
+        self.a_button["rect"] = Rect(
             self.a_button["position"][0], self.a_button["position"][1],
             self.a_button["surface"].get_width(),
             self.a_button["surface"].get_height())
@@ -97,7 +98,7 @@ class ControllerOverlay(object):
         self.b_button["surface"] = graphics.load_and_scale("gfx/b-button.png")
         self.b_button["position"] = (prepare.SCREEN_SIZE[0] - int( self.b_button["surface"].get_width() * 2.1 ),
             (self.dpad["position"][1] + (self.dpad["surface"].get_height() / 2) - (self.b_button["surface"].get_height() / 2)))
-        self.b_button["rect"] = pygame.Rect(
+        self.b_button["rect"] = Rect(
             self.b_button["position"][0],
             self.b_button["position"][1],
             self.b_button["surface"].get_width(),

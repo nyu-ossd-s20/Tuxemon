@@ -148,7 +148,7 @@ def open_save_file(save_path):
             return {}
 
     except IOError as e:
-        logger.error(e)
+        logger.info(e)
         return None
 
 

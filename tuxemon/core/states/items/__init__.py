@@ -94,16 +94,10 @@ class ItemMenuState(Menu):
             monster = menu_item.game_object
 
             # item must be used before state is popped.
-            # don't try to combine with "if result..." condition below
             result = item.use(player, monster)
             self.game.pop_state()  # pop the monster screen
             self.game.pop_state()  # pop the item screen
-
-            msg_type = 'use_success' if result['success'] else 'use_failure'
-            template = getattr(item, msg_type)
-            if template:
-                message = T.translate(template)
-                tools.open_dialog(self.game, [message])
+            tools.show_item_result_as_dialog(self.game, item, result)
 
         def confirm():
             self.game.pop_state()  # close the confirm dialog
@@ -254,8 +248,11 @@ class ShopMenuState(Menu):
             if self.buyer:
                 self.seller.give_item(self.game, self.buyer, item, quantity)
             else:
-                self.seller.alter_item_quantity(item.slug, -quantity)
+                self.seller.alter_item_quantity(self.game, item.slug, -quantity)
             self.reload_items()
+            if not self.seller.has_item(item.slug):
+                # We're pointing at a new item
+                self.on_menu_selection_change()
 
         item_dict = self.seller.inventory[item.slug]
         max_quantity = None if item_dict.get("infinite") else item_dict['quantity']

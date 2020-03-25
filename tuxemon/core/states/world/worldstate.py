@@ -37,7 +37,8 @@ import logging
 import pygame
 
 from tuxemon.compat import Rect
-from tuxemon.core import networking, prepare, state, rumble
+from tuxemon.core import prepare, state, networking
+from tuxemon.core import rumble
 from tuxemon.core.map_view import MapView
 from tuxemon.core.platform.const import buttons, events, intentions
 from tuxemon.core.platform.events import PlayerInput
@@ -211,8 +212,8 @@ class WorldState(state.State):
         """
         w, h = surface.get_size()
 
-        r0 = Rect(0, 0, w/2, h)
-        r1 = Rect(w/2, 0, w/2, h)
+        r0 = Rect(0, 0, w / 2, h)
+        r1 = Rect(w / 2, 0, w / 2, h)
 
         entity = local_session.world.get_entity("professor")
         if entity:

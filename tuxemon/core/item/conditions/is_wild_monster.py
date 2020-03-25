@@ -19,43 +19,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
+# Contributor(s):
+#
+# Leif Theden <leif.theden@gmail.com>
+#
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import logging
-
-from tuxemon.core.event.eventaction import EventAction
-
-logger = logging.getLogger(__name__)
+from tuxemon.core.item.itemcondition import ItemCondition
 
 
-class WaitForInputAction(EventAction):
-    """Pauses the event engine until specified button is pressed
-
-    Valid Parameters: button
-
-    * button (str): pygame key to wait for
-
-    **Examples:**
-
-    >>> action.__dict__
-    {
-        "type": "wait_for_input",
-        "parameters": [
-            "K_RETURN"
-        ]
-    }
-
+class IsWildMonsterCondition(ItemCondition):
+    """ True if not owned by a trainer
     """
-    name = "wait_for_input"
-    valid_parameters = [
-        (str, "button")
-    ]
+    name = "is_wild_monster"
+    valid_parameters = []
 
-    def start(self):
-        logger.warning("the wait_for_input action has been deprecated, please remove it from your scripts")
-        self.session.control.event_engine.button = self.parameters.button
-        self.session.control.event_engine.state = "waiting for input"
-        self.session.control.event_engine.wait = 2
+    def test(self, target):
+        return target.owner is None

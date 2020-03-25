@@ -96,7 +96,7 @@ class State(object):
     def load_sprite(self, filename, **kwargs):
         """ Load a sprite and add it to this state
 
-        kwargs can be any value used by pygame Rect, or layer
+        kwargs can be any value used by Rect, or layer
 
         :param filename: filename, relative to the resources folder
         :type filename: String
